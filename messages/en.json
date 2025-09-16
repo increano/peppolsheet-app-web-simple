@@ -1,0 +1,297 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "search": "Search",
+    "filter": "Filter",
+    "export": "Export",
+    "import": "Import"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "invoices": "Invoices",
+    "bills": "Bills",
+    "customers": "Customers",
+    "suppliers": "Suppliers",
+    "expenses": "Expenses",
+    "reports": "Reports",
+    "settings": "Settings"
+  },
+  "dashboard": {
+    "title": "Cashflow Management SaaS",
+    "accountsReceivable": {
+      "title": "Accounts Receivable",
+      "description": "Manage invoices and customer payments"
+    },
+    "accountsPayable": {
+      "title": "Accounts Payable",
+      "description": "Track bills and supplier payments"
+    },
+    "peppolIntegration": {
+      "title": "PEPPOL Integration",
+      "description": "E-invoicing via Storecove API"
+    }
+  },
+  "invoices": {
+    "title": "Invoices",
+    "create": "Create Invoice",
+    "number": "Invoice Number",
+    "customer": "Customer",
+    "amount": "Amount",
+    "status": "Status",
+    "dueDate": "Due Date",
+    "issueDate": "Issue Date"
+  },
+  "auth": {
+    "login": "Login",
+    "logout": "Logout",
+    "email": "Email",
+    "password": "Password",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "forgotPassword": "Forgot Password?",
+    "createAccount": "Create Account",
+    "alreadyHaveAccount": "Already have an account?",
+    "dontHaveAccount": "Don't have an account?",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "confirmPassword": "Confirm Password",
+    "companyName": "Name",
+    "language": "Language",
+    "selectLanguage": "Select Language",
+    "welcomeBack": "Welcome back",
+    "loginSubtitle": "Enter your credentials to access your account",
+    "signupSubtitle": "Create your account to get started",
+    "termsAndConditions": "I agree to the Terms and Conditions",
+    "privacyPolicy": "Privacy Policy",
+    "loginWithGoogle": "Login with Google",
+    "loginWithMicrosoft": "Login with Microsoft",
+    "orContinueWith": "Or continue with",
+    "emailRequired": "Email is required",
+    "passwordRequired": "Password is required",
+    "firstNameRequired": "First name is required",
+    "lastNameRequired": "Last name is required",
+    "companyNameRequired": "Company name is required",
+    "businessRegistrationNumber": "Business Registration Number",
+    "businessRegistrationNumberRequired": "Business registration number is required",
+    "peppolId": "PEPPOL Identifier",
+    "peppolIdOptional": "Optional - leave blank if you don't have one",
+    "invoiceVolumePerMonth": "Monthly Invoice Volume",
+    "passwordMismatch": "Passwords do not match",
+    "invalidEmail": "Please enter a valid email address",
+    "passwordMinLength": "Password must be at least 8 characters"
+  },
+  "onboarding": {
+    "welcome": "Welcome to Cashflow SaaS",
+    "subtitle": "Let's get your business set up for success",
+    "step": "Step",
+    "of": "of",
+    "next": "Next",
+    "previous": "Previous",
+    "skip": "Skip",
+    "finish": "Finish",
+    "getStarted": "Get Started",
+    "businessInfo": {
+      "title": "Business Information",
+      "subtitle": "Tell us about your business",
+      "businessName": "Business Name",
+      "businessType": "Business Type",
+      "industry": "Industry",
+      "country": "Country",
+      "currency": "Primary Currency",
+      "taxId": "Tax ID / VAT Number",
+      "businessRegistrationNumber": "Business Registration Number",
+      "invoiceVolumePerMonth": "Estimated Monthly Invoice Volume",
+      "selectVolume": "Select monthly volume",
+      "volumes": {
+        "0": "0-10 invoices per month",
+        "10": "10-50 invoices per month",
+        "50": "50-100 invoices per month",
+        "100": "100-500 invoices per month",
+        "500": "500-1000 invoices per month",
+        "1000": "1000-5000 invoices per month",
+        "5000": "5000+ invoices per month"
+      },
+      "businessTypes": {
+        "soleProprietorship": "Sole Proprietorship",
+        "partnership": "Partnership",
+        "corporation": "Corporation",
+        "llc": "LLC",
+        "other": "Other"
+      }
+    },
+    "peppolSetup": {
+      "title": "PEPPOL Integration",
+      "subtitle": "Connect to the PEPPOL network for e-invoicing",
+      "enablePeppol": "Enable PEPPOL Integration",
+      "peppolId": "PEPPOL Identifier",
+      "peppolIdOptional": "Leave blank if you don't have a PEPPOL identifier yet",
+      "legalEntity": "Legal Entity Name",
+      "description": "PEPPOL enables automatic e-invoicing across Europe. This is optional and can be set up later.",
+      "benefits": {
+        "title": "Benefits of PEPPOL:",
+        "automated": "Automated invoice delivery",
+        "compliance": "EU compliance ready",
+        "efficiency": "Faster payment processing",
+        "integration": "Seamless integration"
+      }
+    },
+    "multiTenant": {
+      "title": "Multiple Entities",
+      "subtitle": "Manage multiple business entities",
+      "description": "If you manage multiple business entities, you can add them now or later from your dashboard.",
+      "addAnotherEntity": "I manage multiple business entities",
+      "additionalEntity": "Additional Business Entity",
+      "entityName": "Entity Name",
+      "entityNamePlaceholder": "Enter company name",
+      "entityRegistrationNumber": "Business Registration Number",
+      "entityRegistrationPlaceholder": "Enter registration number",
+      "entityPeppolId": "PEPPOL Identifier",
+      "entityPeppolIdOptional": "Optional - leave blank if not available",
+      "entityInvoiceVolume": "Monthly Invoice Volume"
+    },
+    "preferences": {
+      "title": "Preferences",
+      "subtitle": "Customize your experience",
+      "dateFormat": "Date Format",
+      "numberFormat": "Number Format",
+      "fiscalYearStart": "Fiscal Year Start",
+      "notifications": "Email Notifications",
+      "weeklyReports": "Weekly Reports",
+      "monthlyReports": "Monthly Reports",
+      "paymentReminders": "Payment Reminders",
+      "systemUpdates": "System Updates"
+    },
+    "complete": {
+      "title": "You're All Set!",
+      "subtitle": "Your account has been configured successfully",
+      "description": "Welcome to your cashflow management dashboard. You can always update these settings later in your account preferences.",
+      "goToDashboard": "Go to Dashboard"
+    }
+  },
+  "notFound": {
+    "title": "404",
+    "description": "Page not found",
+    "backHome": "Go back home"
+  },
+  "invoice": {
+    "createInvoice": "Create E-Invoice",
+    "multiStep": {
+      "step1": "Business Entity",
+      "step2": "Invoice Details",
+      "step3": "Line Items",
+      "step4": "Review & Submit"
+    },
+    "businessEntity": {
+      "title": "Select or Create Business Entity",
+      "subtitle": "Search for an existing business entity or create a new one",
+      "search": "Search",
+      "create": "Create",
+      "searchPlaceholder": "Search by company name, VAT number, or email",
+      "noResults": "No business entities found",
+      "createNew": "Create New Business Entity",
+      "selectEntity": "Select Entity"
+    },
+    "entityForm": {
+      "title": "Business Entity Information",
+      "subtitle": "Verify that field completion matches document data!",
+      "type": "Type",
+      "typeRequired": "Type is required",
+            "country": "Country",
+      "countryRequired": "Country is required",
+      "entityNumber": "Entity Number",
+      "entityNumberRequired": "Entity number is required",
+      "companyName": "Name",
+      "companyNameRequired": "Company name is required", 
+      "email": "Email",
+      "emailRequired": "Email is required",
+      "phone": "Phone",
+      "street": "Street",
+      "number": "Number",
+      "box": "Box",
+      "postalCode": "Postal Code",
+      "city": "City",
+      "notes": "Notes",
+      "next": "Next",
+      "cancel": "Cancel",
+      "entityTypes": {
+        "individual": "Private Individual",
+        "belgianCompany": "Belgian Company",
+        "euCompany": "EU Company",
+        "nonEuCompany": "Non-EU Company",
+        "dontKnow": "I don't know"
+      },
+      "required": "Required"
+    },
+    "invoiceDetails": {
+      "title": "Invoice Details",
+      "subtitle": "Enter the invoice information and categorize your services",
+      "invoiceDate": "Invoice Date",
+      "invoiceDateRequired": "Invoice date is required",
+      "expirationDate": "Expiration Date",
+      "reference": "Reference",
+      "referenceRequired": "Reference is required",
+      "generate": "Generate",
+      "category": "Category",
+      "categoryRequired": "Category is required",
+      "selectCategory": "Select a category",
+      "customCategory": "Custom Category",
+      "customCategoryName": "Custom Category Name",
+      "customCategoryPlaceholder": "Enter category name",
+      "isCreditNote": "This is a credit note",
+      "accountForToday": "Account this document for today",
+      "categories": {
+        "consulting": "Consulting",
+        "software_development": "Software Development",
+        "design": "Design & Creative",
+        "marketing": "Marketing & Advertising",
+        "training": "Training & Education",
+        "maintenance": "Maintenance & Support",
+        "support": "Technical Support"
+      }
+    }
+  },
+        "partners": {
+        "title": "Partners",
+        "subtitle": "Manage your business partners and customers",
+        "addPartner": "Add Partner",
+        "searchPlaceholder": "Search partners by name, email, or VAT number...",
+        "totalPartners": "Total Partners",
+        "euPartners": "EU Partners",
+        "belgianPartners": "Belgian Partners",
+        "noPartners": "No partners yet",
+        "noPartnersDescription": "Start by adding your first business partner",
+        "addFirstPartner": "Add Your First Partner",
+        "viewMode": {
+          "grid": "Grid",
+          "table": "Table"
+        },
+        "filters": {
+          "filters": "Filters",
+          "country": "Country",
+          "allCountries": "All Countries",
+          "sortBy": "Sort by",
+          "ascending": "Ascending",
+          "descending": "Descending"
+        },
+        "tableHeaders": {
+          "company": "Company",
+          "contact": "Contact",
+          "country": "Country",
+          "vatNumber": "VAT Number",
+          "type": "Type",
+          "actions": "Actions"
+        },
+        "sortOptions": {
+          "name": "Name",
+          "email": "Email",
+          "country": "Country",
+          "vatNumber": "VAT Number",
+          "dateAdded": "Date Added"
+        }
+      }
+}

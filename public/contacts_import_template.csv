@@ -1,0 +1,11 @@
+company_name,tax_id,first_name,last_name,email,phone,job_title,department,is_primary_contact
+"Acme Corp","123456789","John","Doe","john.doe@acme.com","+1-555-0124","CEO","Executive",true
+"Acme Corp","123456789","Jane","Smith","jane.smith@acme.com","+1-555-0125","CFO","Finance",false
+"Acme Corp","123456789","Mike","Johnson","mike.johnson@acme.com","+1-555-0126","CTO","Technology",false
+"Tech Solutions","987654321","Sarah","Wilson","sarah.wilson@techsolutions.com","+1-555-0457","CTO","Technology",true
+"Tech Solutions","987654321","David","Brown","david.brown@techsolutions.com","+1-555-0458","VP Sales","Sales",false
+"Global Manufacturing","456789123","Lisa","Garcia","lisa.garcia@globalmfg.com","+1-555-0790","Operations Manager","Operations",true
+"Global Manufacturing","456789123","Robert","Martinez","robert.martinez@globalmfg.com","+1-555-0791","Quality Control","Quality",false
+"Retail Plus","789123456","Emily","Davis","emily.davis@retailplus.com","+1-555-0322","Store Manager","Retail",true
+"Healthcare Systems","321654987","Dr. Michael","Taylor","michael.taylor@healthcare.com","+1-555-0655","Medical Director","Medical",true
+"Financial Services Pro","654987321","Jennifer","Anderson","jennifer.anderson@finpro.com","+1-555-0988","Financial Advisor","Advisory",true

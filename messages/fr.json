@@ -1,0 +1,297 @@
+{
+  "common": {
+    "loading": "Chargement...",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "create": "Créer",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "export": "Exporter",
+    "import": "Importer"
+  },
+  "navigation": {
+    "dashboard": "Tableau de bord",
+    "invoices": "Factures",
+    "bills": "Factures fournisseurs",
+    "customers": "Clients",
+    "suppliers": "Fournisseurs",
+    "expenses": "Dépenses",
+    "reports": "Rapports",
+    "settings": "Paramètres"
+  },
+  "dashboard": {
+    "title": "SaaS de Gestion de Trésorerie",
+    "accountsReceivable": {
+      "title": "Comptes Clients",
+      "description": "Gérer les factures et les paiements clients"
+    },
+    "accountsPayable": {
+      "title": "Comptes Fournisseurs",
+      "description": "Suivre les factures et les paiements fournisseurs"
+    },
+    "peppolIntegration": {
+      "title": "Intégration PEPPOL",
+      "description": "Facturation électronique via l'API Storecove"
+    }
+  },
+  "invoices": {
+    "title": "Factures",
+    "create": "Créer une facture",
+    "number": "Numéro de facture",
+    "customer": "Client",
+    "amount": "Montant",
+    "status": "Statut",
+    "dueDate": "Date d'échéance",
+    "issueDate": "Date d'émission"
+  },
+  "auth": {
+    "login": "Connexion",
+    "logout": "Déconnexion",
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "signIn": "Se connecter",
+    "signUp": "S'inscrire",
+    "forgotPassword": "Mot de passe oublié ?",
+    "createAccount": "Créer un compte",
+    "alreadyHaveAccount": "Vous avez déjà un compte ?",
+    "dontHaveAccount": "Vous n'avez pas de compte ?",
+    "firstName": "Prénom",
+    "lastName": "Nom",
+    "confirmPassword": "Confirmer le mot de passe",
+    "companyName": "Nom",
+    "language": "Langue",
+    "selectLanguage": "Sélectionner la langue",
+    "welcomeBack": "Bon retour",
+    "loginSubtitle": "Entrez vos identifiants pour accéder à votre compte",
+    "signupSubtitle": "Créez votre compte pour commencer",
+    "termsAndConditions": "J'accepte les conditions générales",
+    "privacyPolicy": "Politique de confidentialité",
+    "loginWithGoogle": "Se connecter avec Google",
+    "loginWithMicrosoft": "Se connecter avec Microsoft",
+    "orContinueWith": "Ou continuer avec",
+    "emailRequired": "L'e-mail est requis",
+    "passwordRequired": "Le mot de passe est requis",
+    "firstNameRequired": "Le prénom est requis",
+    "lastNameRequired": "Le nom est requis",
+    "companyNameRequired": "Le nom de l'entreprise est requis",
+    "businessRegistrationNumber": "Numéro d'Entreprise",
+    "businessRegistrationNumberRequired": "Le numéro d'entreprise est requis",
+    "peppolId": "Identifiant PEPPOL",
+    "peppolIdOptional": "Optionnel - laissez vide si vous n'en avez pas",
+    "invoiceVolumePerMonth": "Volume Mensuel de Factures",
+    "passwordMismatch": "Les mots de passe ne correspondent pas",
+    "invalidEmail": "Veuillez entrer une adresse e-mail valide",
+    "passwordMinLength": "Le mot de passe doit contenir au moins 8 caractères"
+  },
+  "onboarding": {
+    "welcome": "Bienvenue sur Cashflow SaaS",
+    "subtitle": "Configurons votre entreprise pour le succès",
+    "step": "Étape",
+    "of": "sur",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "skip": "Passer",
+    "finish": "Terminer",
+    "getStarted": "Commencer",
+    "businessInfo": {
+      "title": "Informations sur l'entreprise",
+      "subtitle": "Parlez-nous de votre entreprise",
+      "businessName": "Nom de l'entreprise",
+      "businessType": "Type d'entreprise",
+      "industry": "Secteur",
+      "country": "Pays",
+      "currency": "Devise principale",
+      "taxId": "Numéro fiscal / TVA",
+      "businessRegistrationNumber": "Numéro d'entreprise",
+      "invoiceVolumePerMonth": "Volume mensuel estimé de factures",
+      "selectVolume": "Sélectionner le volume mensuel",
+      "volumes": {
+        "0": "0-10 factures par mois",
+        "10": "10-50 factures par mois",
+        "50": "50-100 factures par mois",
+        "100": "100-500 factures par mois",
+        "500": "500-1000 factures par mois",
+        "1000": "1000-5000 factures par mois",
+        "5000": "5000+ factures par mois"
+      },
+      "businessTypes": {
+        "soleProprietorship": "Entreprise individuelle",
+        "partnership": "Société de personnes",
+        "corporation": "Société",
+        "llc": "SARL",
+        "other": "Autre"
+      }
+    },
+    "peppolSetup": {
+      "title": "Intégration PEPPOL",
+      "subtitle": "Connectez-vous au réseau PEPPOL pour la facturation électronique",
+      "enablePeppol": "Activer l'intégration PEPPOL",
+      "peppolId": "Identifiant PEPPOL",
+      "peppolIdOptional": "Laissez vide si vous n'avez pas encore d'identifiant PEPPOL",
+      "legalEntity": "Nom de l'entité juridique",
+      "description": "PEPPOL permet la facturation électronique automatique en Europe. Ceci est optionnel et peut être configuré plus tard.",
+      "benefits": {
+        "title": "Avantages de PEPPOL :",
+        "automated": "Livraison automatisée des factures",
+        "compliance": "Conformité UE prête",
+        "efficiency": "Traitement des paiements plus rapide",
+        "integration": "Intégration transparente"
+      }
+    },
+    "multiTenant": {
+      "title": "Entités Multiples",
+      "subtitle": "Gérer plusieurs entités commerciales",
+      "description": "Si vous gérez plusieurs entités commerciales, vous pouvez les ajouter maintenant ou plus tard depuis votre tableau de bord.",
+      "addAnotherEntity": "Je gère plusieurs entités commerciales",
+      "additionalEntity": "Entité Commerciale Supplémentaire",
+      "entityName": "Nom de l'Entité",
+      "entityNamePlaceholder": "Entrez le nom de l'entreprise",
+      "entityRegistrationNumber": "Numéro d'Entreprise",
+      "entityRegistrationPlaceholder": "Entrez le numéro d'enregistrement",
+      "entityPeppolId": "Identifiant PEPPOL",
+      "entityPeppolIdOptional": "Optionnel - laissez vide si non disponible",
+      "entityInvoiceVolume": "Volume Mensuel de Factures"
+    },
+    "preferences": {
+      "title": "Préférences",
+      "subtitle": "Personnalisez votre expérience",
+      "dateFormat": "Format de date",
+      "numberFormat": "Format numérique",
+      "fiscalYearStart": "Début d'exercice fiscal",
+      "notifications": "Notifications par e-mail",
+      "weeklyReports": "Rapports hebdomadaires",
+      "monthlyReports": "Rapports mensuels",
+      "paymentReminders": "Rappels de paiement",
+      "systemUpdates": "Mises à jour système"
+    },
+    "complete": {
+      "title": "Tout est prêt !",
+      "subtitle": "Votre compte a été configuré avec succès",
+      "description": "Bienvenue sur votre tableau de bord de gestion de trésorerie. Vous pouvez toujours modifier ces paramètres plus tard dans vos préférences de compte.",
+      "goToDashboard": "Aller au tableau de bord"
+    }
+  },
+  "notFound": {
+    "title": "404",
+    "description": "Page non trouvée",
+    "backHome": "Retourner à l'accueil"
+  },
+  "invoice": {
+    "createInvoice": "Créer une E-Facture",
+    "multiStep": {
+      "step1": "Entité commerciale",
+      "step2": "Détails de la facture",
+      "step3": "Lignes d'articles", 
+      "step4": "Réviser et soumettre"
+    },
+    "businessEntity": {
+      "title": "Sélectionner ou créer une entité commerciale",
+      "subtitle": "Recherchez une entité commerciale existante ou créez-en une nouvelle",
+      "search": "CHERCHER",
+      "create": "CRÉER", 
+      "searchPlaceholder": "Rechercher par nom d'entreprise, numéro de TVA ou email",
+      "noResults": "Aucune entité commerciale trouvée",
+      "createNew": "Créer une nouvelle entité commerciale",
+      "selectEntity": "Sélectionner l'entité"
+    },
+    "entityForm": {
+      "title": "Données du fournisseur",
+      "subtitle": "Vérifier que les champs remplis correspondent aux données de vos documents",
+      "type": "Type",
+      "typeRequired": "Le type est obligatoire",
+      "country": "Pays",
+      "countryRequired": "Le pays est obligatoire",
+      "entityNumber": "Numéro d'entité",
+      "entityNumberRequired": "Le numéro d'entité est obligatoire",
+      "companyName": "Nom",
+      "companyNameRequired": "Le nom de l'entreprise est obligatoire",
+      "email": "E-mail", 
+      "emailRequired": "L'email est obligatoire",
+      "phone": "Téléphone",
+      "street": "Rue",
+      "number": "Numéro",
+      "box": "Boîte",
+      "postalCode": "Code postal",
+      "city": "Commune",
+      "notes": "Notes",
+      "next": "Suivant",
+      "cancel": "Annuler",
+      "entityTypes": {
+        "individual": "Personne privée",
+        "belgianCompany": "Entreprise belge",
+        "euCompany": "Entreprise au sein de l'UE", 
+        "nonEuCompany": "Entreprise en dehors de l'UE",
+        "dontKnow": "Je ne sais pas"
+      },
+      "required": "Requis"
+    },
+    "invoiceDetails": {
+      "title": "Détails de la facture",
+      "subtitle": "Saisissez les informations de la facture et catégorisez vos services",
+      "invoiceDate": "Date de facture",
+      "invoiceDateRequired": "La date de facture est obligatoire",
+      "expirationDate": "Date d'expiration",
+      "reference": "Référence",
+      "referenceRequired": "La référence est obligatoire",
+      "generate": "Générer",
+      "category": "Catégorie",
+      "categoryRequired": "La catégorie est obligatoire",
+      "selectCategory": "Sélectionner une catégorie",
+      "customCategory": "Catégorie personnalisée",
+      "customCategoryName": "Nom de la catégorie personnalisée",
+      "customCategoryPlaceholder": "Saisir le nom de la catégorie",
+      "isCreditNote": "Ceci est une note de crédit",
+      "accountForToday": "Comptabiliser ce document pour cette journée",
+      "categories": {
+        "consulting": "Conseil",
+        "software_development": "Développement logiciel",
+        "design": "Design & Créatif",
+        "marketing": "Marketing & Publicité",
+        "training": "Formation & Éducation",
+        "maintenance": "Maintenance & Support",
+        "support": "Support technique"
+      }
+    }
+  },
+        "partners": {
+        "title": "Partenaires",
+        "subtitle": "Gérez vos partenaires commerciaux et clients",
+        "addPartner": "Ajouter un partenaire",
+        "searchPlaceholder": "Rechercher par nom, email ou numéro de TVA...",
+        "totalPartners": "Total des partenaires",
+        "euPartners": "Partenaires UE",
+        "belgianPartners": "Partenaires belges",
+        "noPartners": "Aucun partenaire pour le moment",
+        "noPartnersDescription": "Commencez par ajouter votre premier partenaire commercial",
+        "addFirstPartner": "Ajouter votre premier partenaire",
+        "viewMode": {
+          "grid": "Grille",
+          "table": "Tableau"
+        },
+        "filters": {
+          "filters": "Filtres",
+          "country": "Pays",
+          "allCountries": "Tous les pays",
+          "sortBy": "Trier par",
+          "ascending": "Croissant",
+          "descending": "Décroissant"
+        },
+        "tableHeaders": {
+          "company": "Entreprise",
+          "contact": "Contact",
+          "country": "Pays",
+          "vatNumber": "Numéro de TVA",
+          "type": "Type",
+          "actions": "Actions"
+        },
+        "sortOptions": {
+          "name": "Nom",
+          "email": "Email",
+          "country": "Pays",
+          "vatNumber": "Numéro de TVA",
+          "dateAdded": "Date d'ajout"
+        }
+      }
+}

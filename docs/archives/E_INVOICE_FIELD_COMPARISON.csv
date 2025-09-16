@@ -1,0 +1,89 @@
+E-Invoice Field,E-Invoice Type,E-Invoice Description,Business Entities Field,Business Entities Type,Business Entities Description,Business Entities Staging Field,Business Entities Staging Type,Business Entities Staging Description,Customers Field,Customers Type,Customers Description,Suppliers Field,Suppliers Type,Suppliers Description,Search API Field,Search API Type,Search API Description,Mapping Quality,Notes
+document_type,enum,Type of document,,,,,,,,,,❌ Not Applicable,Document-specific field
+state,enum,Document state,,,,,,,,,,❌ Not Applicable,Document-specific field
+direction,enum,Document direction,,,,,,,,,,❌ Not Applicable,Document-specific field
+id,string,Document ID,id,UUID,Primary key,id,UUID,Primary key,id,string,Company ID,✅ Perfect,Direct match
+invoice_id,string,Invoice identifier,,,,,,,,,,❌ Not Applicable,Document-specific field
+invoice_date,date,Invoice date,,,,,,,,,,❌ Not Applicable,Document-specific field
+due_date,date,Payment due date,,,,,,,,,,❌ Not Applicable,Document-specific field
+purchase_order,string,Purchase order,,,,,,,,,,❌ Not Applicable,Document-specific field
+customer_name,string,Customer company name,name,VARCHAR,Company name,name,TEXT,Company name,name,string,Company name,✅ Perfect,Direct match
+customer_id,string,Customer identifier,customer_number,VARCHAR,Internal customer number,,,,customer_number,VARCHAR,Internal customer number,,,✅ Perfect,Direct match from customers table
+customer_email,string,Customer email,email,VARCHAR,Contact email,,,,,email,string,Contact email,⚠️ Partial,Need contacts table
+customer_tax_id,string,Customer tax ID,tax_id,VARCHAR,Tax ID/VAT number,tax_id,TEXT,Tax ID/VAT number,tax_id,string,Tax ID/VAT number,✅ Perfect,Direct match
+customer_address,string,Customer address,billing_street_address,TEXT,Billing address,billing_street_address,TEXT,Billing address,address,string,Company address,⚠️ Partial,Only street address
+customer_address_recipient,string,Customer address recipient,name,VARCHAR,Company name,name,TEXT,Company name,name,string,Company name,✅ Good,Company name as recipient
+vendor_name,string,Vendor company name,name,VARCHAR,Company name,name,TEXT,Company name,name,string,Company name,✅ Perfect,Direct match
+vendor_email,string,Vendor email,email,VARCHAR,Contact email,,,,,email,string,Contact email,⚠️ Partial,Need contacts table
+vendor_tax_id,string,Vendor tax ID,tax_id,VARCHAR,Tax ID/VAT number,tax_id,TEXT,Tax ID/VAT number,tax_id,string,Tax ID/VAT number,✅ Perfect,Direct match
+vendor_address,string,Vendor address,billing_street_address,TEXT,Billing address,billing_street_address,TEXT,Billing address,address,string,Company address,⚠️ Partial,Only street address
+vendor_address_recipient,string,Vendor address recipient,name,VARCHAR,Company name,name,TEXT,Company name,name,string,Company name,✅ Good,Company name as recipient
+billing_address,string,Billing address,billing_street_address,TEXT,Billing address,billing_street_address,TEXT,Billing address,address,string,Company address,⚠️ Partial,Missing city state postal
+billing_address_recipient,string,Billing address recipient,name,VARCHAR,Company name,name,TEXT,Company name,name,string,Company name,✅ Good,Company name as recipient
+shipping_address,string,Shipping address,billing_street_address,TEXT,Billing address,billing_street_address,TEXT,Billing address,address,string,Company address,⚠️ Partial,No separate shipping
+shipping_address_recipient,string,Shipping address recipient,name,VARCHAR,Company name,name,TEXT,Company name,name,string,Company name,✅ Good,Company name as recipient
+remittance_address,string,Remittance address,billing_street_address,TEXT,Billing address,billing_street_address,TEXT,Billing address,address,string,Company address,⚠️ Partial,No separate remittance
+remittance_address_recipient,string,Remittance address recipient,name,VARCHAR,Company name,name,TEXT,Company name,name,string,Company name,✅ Good,Company name as recipient
+service_address,string,Service address,,,,,,,,,,❌ Missing,Need to add
+service_address_recipient,string,Service address recipient,,,,,,,,,,❌ Missing,Need to add
+service_start_date,date,Service period start,,,,,,,,,,❌ Not Applicable,Document-specific
+service_end_date,date,Service period end,,,,,,,,,,❌ Not Applicable,Document-specific
+currency,enum,Currency code,currency,VARCHAR,Preferred currency,currency,TEXT,Preferred currency,currency,string,Preferred currency,✅ Perfect,Direct match
+subtotal,decimal,Subtotal amount,,,,,,,,,,❌ Not Applicable,Document-specific
+total_discount,decimal,Total discount,,,,,,,,,,❌ Not Applicable,Document-specific
+total_tax,decimal,Total tax amount,,,,,,,,,,❌ Not Applicable,Document-specific
+invoice_total,decimal,Total invoice amount,,,,,,,,,,❌ Not Applicable,Document-specific
+amount_due,decimal,Amount due,,,,,,,,,,❌ Not Applicable,Document-specific
+previous_unpaid_balance,decimal,Previous unpaid balance,,,,,,,,,,❌ Not Applicable,Document-specific
+payment_term,string,Payment terms,default_payment_terms,INTEGER,Payment terms in days,,,,default_payment_terms,INTEGER,Payment terms in days,default_payment_terms,INTEGER,Payment terms in days,,,✅ Perfect,Direct match from both tables
+note,string,Additional notes,,,,,,,,,,❌ Not Applicable,Document-specific
+payment_details[].iban,string,IBAN number,bank_account_number,VARCHAR,Bank account number,,,,,bank_account_number,VARCHAR,Bank account number,,,⚠️ Partial,Different format
+payment_details[].swift,string,SWIFT/BIC code,,,,,,,,,,❌ Missing,Need swift_bic field
+payment_details[].bank_account_number,string,Bank account number,bank_account_number,VARCHAR,Bank account number,,,,,bank_account_number,VARCHAR,Bank account number,,,✅ Perfect,Direct match
+payment_details[].payment_reference,string,Payment reference,,,,,,,,,,❌ Missing,Need payment_reference field
+tax_details[].amount,decimal,Tax amount,,,,,,,,,,❌ Not Applicable,Document-specific
+tax_details[].rate,string,Tax rate,,,,,,,,,,❌ Not Applicable,Document-specific
+items[].amount,decimal,Line item total,,,,,,,,,,❌ Not Applicable,Document-specific
+items[].date,date,Item date,,,,,,,,,,❌ Not Applicable,Document-specific
+items[].description,string,Item description,,,,,,,,,,❌ Not Applicable,Document-specific
+items[].quantity,decimal,Quantity,,,,,,,,,,❌ Not Applicable,Document-specific
+items[].product_code,string,Product/SKU code,,,,,,,,,,❌ Not Applicable,Document-specific
+items[].tax,decimal,Tax amount for item,,,,,,,,,,❌ Not Applicable,Document-specific
+items[].tax_rate,string,Tax rate for item,,,,,,,,,,❌ Not Applicable,Document-specific
+items[].unit,string,Unit of measurement,,,,,,,,,,❌ Not Applicable,Document-specific
+items[].unit_price,decimal,Unit price,,,,,,,,,,❌ Not Applicable,Document-specific
+attachments[].file_name,string,Original filename,,,,,,,,,,❌ Not Applicable,Document-specific
+attachments[].file_type,string,MIME type,,,,,,,,,,❌ Not Applicable,Document-specific
+attachments[].file_size,integer,File size in bytes,,,,,,,,,,❌ Not Applicable,Document-specific
+attachments[].file_data,string,Binary file data,,,,,,,,,,❌ Not Applicable,Document-specific
+,,,,website,VARCHAR,Company website,website,TEXT,Company website,website,string,Company website,✅ Perfect,Direct match
+,,,,industry,VARCHAR,Industry classification,industry,TEXT,Industry classification,industry,string,Industry classification,✅ Perfect,Direct match
+,,,,billing_city,VARCHAR,Billing city,billing_city,TEXT,Billing city,city,string,Company city,✅ Perfect,Direct match
+,,,,billing_postal_code,VARCHAR,Billing postal code,billing_postal_code,TEXT,Billing postal code,postal_code,string,Company postal code,✅ Perfect,Direct match
+,,,,billing_country,VARCHAR,Billing country,billing_country,TEXT,Billing country,country,string,Company country,✅ Perfect,Direct match
+,,,,peppol_scheme,VARCHAR,PEPPOL identifier,peppol_scheme,TEXT,PEPPOL identifier,peppol_id,string,PEPPOL identifier,✅ Perfect,Direct match
+,,,,created_at,TIMESTAMPTZ,Creation timestamp,submitted_at,TIMESTAMPTZ,Submission timestamp,created_at,string,Creation timestamp,✅ Good,Similar timestamp
+,,,,updated_at,TIMESTAMPTZ,Update timestamp,reviewed_at,TIMESTAMPTZ,Review timestamp,updated_at,string,Update timestamp,✅ Good,Similar timestamp
+,,,,,submitted_by,UUID,User who submitted,,,,,❌ Not Applicable,✅ Good,User tracking
+,,,,,verification_status,VARCHAR,Approval status,,,,,❌ Not Applicable,✅ Good,Status tracking
+,,,,,admin_notes,TEXT,Admin review notes,,,,,❌ Not Applicable,✅ Good,Notes field
+,,,,,source_type,VARCHAR,Source of data,,,,,❌ Not Applicable,✅ Good,Data source
+,,,,,reviewed_by,UUID,Admin who reviewed,,,,,❌ Not Applicable,✅ Good,Review tracking
+,,,,,rejection_reason,TEXT,Rejection reason,,,,,❌ Not Applicable,✅ Good,Rejection tracking
+,,,,,phone,string,Contact phone,,,,,❌ Not Applicable,✅ Perfect,Direct match
+,,,,,activity,string,Company activity description,,,,,❌ Not Applicable,✅ Good,Activity info
+,,,,,source_id,string,Source identifier,,,,,❌ Not Applicable,✅ Good,Source tracking
+,,,,,vat_number,string,VAT number,,,,,❌ Not Applicable,✅ Perfect,Direct match with tax_id
+,,,,,tenant_id,UUID,Tenant ID,tenant_id,UUID,Tenant ID,,,❌ Not Applicable,✅ Perfect,Tenant relationship
+,,,,,business_entity_id,UUID,Business entity reference,business_entity_id,UUID,Business entity reference,,,❌ Not Applicable,✅ Perfect,Foreign key relationship
+,,,,,storecove_receiver_identifier,VARCHAR,PEPPOL receiver ID,,,,,❌ Not Applicable,✅ Good,PEPPOL receiver
+,,,,,credit_limit,NUMERIC,Credit limit,,,,,❌ Not Applicable,✅ Good,Credit limit
+,,,,,status,VARCHAR,Status,status,VARCHAR,Status,,,❌ Not Applicable,✅ Perfect,Status field
+,,,,,created_at,TIMESTAMPTZ,Creation timestamp,created_at,TIMESTAMPTZ,Creation timestamp,,,❌ Not Applicable,✅ Perfect,Timestamp
+,,,,,updated_at,TIMESTAMPTZ,Update timestamp,updated_at,TIMESTAMPTZ,Update timestamp,,,❌ Not Applicable,✅ Perfect,Timestamp
+,,,,,supplier_number,VARCHAR,Internal supplier number,,,,,❌ Not Applicable,✅ Good,Internal numbering
+,,,,,preferred_payment_method,VARCHAR,Preferred payment method,,,,,❌ Not Applicable,✅ Good,Payment method
+,,,,,bank_routing_number,VARCHAR,Bank routing number,,,,,❌ Not Applicable,✅ Good,Bank routing
+,,,,,bank_name,VARCHAR,Bank name,,,,,❌ Not Applicable,✅ Good,Bank name
+,,,,,storecove_sender_identifier,VARCHAR,PEPPOL sender ID,,,,,❌ Not Applicable,✅ Good,PEPPOL sender
+,,,,,credit_rating,VARCHAR,Credit rating,,,,,❌ Not Applicable,✅ Good,Credit rating
