@@ -5,8 +5,7 @@ import { TenantSwitcher } from '@/components/auth/tenant-switcher'
 import { UserProfileDropdown } from '@/components/auth/user-profile-dropdown'
 import { 
   BarChart3,
-  Receipt,
-  UserCheck
+  Receipt
 } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -27,11 +26,6 @@ const navigationItems: NavigationItem[] = [
     href: '#',
     icon: Receipt,
     label: 'Invoices'
-  },
-  {
-    href: '/en/dashboard/partners',
-    icon: UserCheck,
-    label: 'Partners'
   }
 ]
 
@@ -66,7 +60,7 @@ export function DashboardSidebar() {
         
         <div className="mb-4">
           <p className="px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wide">
-            Manage E-Invoice
+            Manage General
           </p>
         </div>
         

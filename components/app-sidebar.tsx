@@ -4,17 +4,19 @@ import * as React from "react"
 import {
   AudioWaveform,
   BarChart3,
-  Building2,
   Command,
   FileText,
   GalleryVerticalEnd,
   LayoutDashboard,
-  Users,
+  PenLine,
+  Plus,
+  Receipt,
+  Upload,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
 import { RoleNavMain } from "@/components/role-nav-main"
-import { NavAccount } from "@/components/nav-account"
+import { NavDocuments } from "@/components/nav-documents"
 import { NavUser } from "@/components/nav-user"
 import { TeamSwitcher } from "@/components/team-switcher"
 import {
@@ -58,28 +60,54 @@ const data = {
       items: [],
     },
     {
-      title: "Manage",
-      url: "/dashboard/e-invoice/manage",
-      icon: FileText,
+      title: "Add New",
+      url: "/dashboard/e-invoice/add-new",
+      icon: Plus,
+      isActive: false,
       items: [],
     },
     {
-      title: "Reports",
-      url: "/dashboard/e-invoice/reports",
-      icon: BarChart3,
+      title: "Upload",
+      url: "/dashboard/e-invoice/upload",
+      icon: Upload,
+      isActive: false,
       items: [],
     },
   ],
-  accountItems: [
+  documentItems: [
     {
-      name: "Companies",
-      url: "/dashboard/e-invoice/companies",
-      icon: Building2,
+      name: "Invoices",
+      url: "/dashboard/e-invoice/overview",
+      icon: FileText,
+      items: [
+        {
+          title: "Invoice #INV-2024-001",
+          url: "/dashboard/e-invoice/documents/INV-2024-001",
+        },
+        {
+          title: "Invoice #INV-2024-002", 
+          url: "/dashboard/e-invoice/documents/INV-2024-002",
+        },
+        {
+          title: "Invoice #INV-2024-003",
+          url: "/dashboard/e-invoice/documents/INV-2024-003",
+        },
+      ],
     },
     {
-      name: "Contacts",
-      url: "/dashboard/e-invoice/contacts",
-      icon: Users,
+      name: "Credit Notes",
+      url: "/dashboard/e-invoice/overview",
+      icon: PenLine,
+      items: [
+        {
+          title: "Credit Note #CN-2024-001",
+          url: "/dashboard/e-invoice/documents/CN-2024-001",
+        },
+        {
+          title: "Credit Note #CN-2024-002",
+          url: "/dashboard/e-invoice/documents/CN-2024-002",
+        },
+      ],
     },
   ],
 }
@@ -92,7 +120,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavAccount accountItems={data.accountItems} />
+        <NavDocuments documentItems={data.documentItems} />
         <RoleNavMain />
       </SidebarContent>
       <SidebarFooter>

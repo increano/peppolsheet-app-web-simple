@@ -51,7 +51,7 @@ export default function EInvoiceLayout({ children }: EInvoiceLayoutProps) {
                   <BreadcrumbSeparator className="hidden md:block" />
                   <BreadcrumbItem className="hidden md:block">
                     <BreadcrumbLink href="#">
-                      E-invoice
+                      General
                     </BreadcrumbLink>
                   </BreadcrumbItem>
                   <BreadcrumbSeparator className="hidden md:block" />
