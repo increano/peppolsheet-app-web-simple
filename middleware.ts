@@ -245,7 +245,7 @@ export async function middleware(req: NextRequest) {
             requiredRoles,
             pathname
           })
-          return NextResponse.redirect(new URL(`/${locale}/dashboard/e-invoice/overview`, req.url))
+          return NextResponse.redirect(new URL(`/${locale}/dashboard/overview`, req.url))
         }
         
         console.log('🚦 Middleware - Role access granted:', {

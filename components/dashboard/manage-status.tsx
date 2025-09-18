@@ -187,7 +187,7 @@ export function ActivityDashboard({ onNewInvoice, onBulkImport, refreshTrigger }
   const [showModal, setShowModal] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [showDatePicker, setShowDatePicker] = useState(false)
-  const [rowsPerPage, setRowsPerPage] = useState('10')
+  const [rowsPerPage, setRowsPerPage] = useState('15')
   const [documents, setDocuments] = useState<Document[]>([])
   const [loadingDocuments, setLoadingDocuments] = useState(false)
   
@@ -739,11 +739,9 @@ export function ActivityDashboard({ onNewInvoice, onBulkImport, refreshTrigger }
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="5">5</SelectItem>
-                <SelectItem value="10">10</SelectItem>
+                <SelectItem value="15">15</SelectItem>
                 <SelectItem value="20">20</SelectItem>
                 <SelectItem value="50">50</SelectItem>
-                <SelectItem value="100">100</SelectItem>
               </SelectContent>
             </Select>
           </div>

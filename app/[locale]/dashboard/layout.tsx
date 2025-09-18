@@ -18,11 +18,11 @@ import {
 } from "@/components/ui/sidebar"
 import { usePathname } from 'next/navigation'
 
-interface EInvoiceLayoutProps {
+interface DashboardLayoutProps {
   children: React.ReactNode
 }
 
-export default function EInvoiceLayout({ children }: EInvoiceLayoutProps) {
+export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const pathname = usePathname()
   
   // Extract the current page name from the pathname

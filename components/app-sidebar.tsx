@@ -4,6 +4,7 @@ import * as React from "react"
 import {
   AudioWaveform,
   BarChart3,
+  Building2,
   Command,
   FileText,
   GalleryVerticalEnd,
@@ -11,6 +12,7 @@ import {
   PenLine,
   Plus,
   Receipt,
+  Search,
   Upload,
 } from "lucide-react"
 
@@ -54,21 +56,21 @@ const data = {
   navMain: [
     {
       title: "Overview",
-      url: "/dashboard/e-invoice/overview",
+      url: "/dashboard/overview",
       icon: LayoutDashboard,
       isActive: true,
       items: [],
     },
     {
-      title: "Add New",
-      url: "/dashboard/e-invoice/add-new",
+      title: "Document",
+      url: "/dashboard/add-new",
       icon: Plus,
       isActive: false,
       items: [],
     },
     {
       title: "Upload",
-      url: "/dashboard/e-invoice/upload",
+      url: "/dashboard/upload",
       icon: Upload,
       isActive: false,
       items: [],
@@ -77,35 +79,50 @@ const data = {
   documentItems: [
     {
       name: "Invoices",
-      url: "/dashboard/e-invoice/overview",
+      url: "/dashboard/overview",
       icon: FileText,
       items: [
         {
           title: "Invoice #INV-2024-001",
-          url: "/dashboard/e-invoice/documents/INV-2024-001",
+          url: "/dashboard/e-invoice/INV-2024-001",
         },
         {
           title: "Invoice #INV-2024-002", 
-          url: "/dashboard/e-invoice/documents/INV-2024-002",
+          url: "/dashboard/e-invoice/INV-2024-002",
         },
         {
           title: "Invoice #INV-2024-003",
-          url: "/dashboard/e-invoice/documents/INV-2024-003",
+          url: "/dashboard/e-invoice/INV-2024-003",
         },
       ],
     },
     {
       name: "Credit Notes",
-      url: "/dashboard/e-invoice/overview",
+      url: "/dashboard/overview",
       icon: PenLine,
       items: [
         {
           title: "Credit Note #CN-2024-001",
-          url: "/dashboard/e-invoice/documents/CN-2024-001",
+          url: "/dashboard/e-invoice/CN-2024-001",
         },
         {
           title: "Credit Note #CN-2024-002",
-          url: "/dashboard/e-invoice/documents/CN-2024-002",
+          url: "/dashboard/e-invoice/CN-2024-002",
+        },
+      ],
+    },
+    {
+      name: "Organization",
+      url: "/dashboard/e-invoice/organization",
+      icon: Building2,
+      items: [
+        {
+          title: "Search",
+          url: "/dashboard/e-invoice/organization/search",
+        },
+        {
+          title: "Directory",
+          url: "/dashboard/e-invoice/organization/directory",
         },
       ],
     },

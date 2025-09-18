@@ -74,7 +74,7 @@ export default function AdminDashboard() {
   const { toast } = useToast()
 
   const [searchQuery, setSearchQuery] = useState('')
-  const [rowsPerPage, setRowsPerPage] = useState('5')
+  const [rowsPerPage, setRowsPerPage] = useState('15')
   const [activeTab, setActiveTab] = useState<'pending' | 'verified'>('pending')
 
   useEffect(() => {
@@ -658,11 +658,9 @@ export default function AdminDashboard() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="5">5</SelectItem>
-                  <SelectItem value="10">10</SelectItem>
+                  <SelectItem value="15">15</SelectItem>
                   <SelectItem value="20">20</SelectItem>
                   <SelectItem value="50">50</SelectItem>
-                  <SelectItem value="100">100</SelectItem>
                 </SelectContent>
               </Select>
             </div>

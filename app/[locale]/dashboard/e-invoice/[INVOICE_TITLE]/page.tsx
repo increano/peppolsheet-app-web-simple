@@ -128,10 +128,13 @@ export default function InvoiceDocumentPage() {
   const [invoiceData, setInvoiceData] = useState<InvoiceData | null>(null)
   const [loading, setLoading] = useState(true)
 
-  const invoiceTitle = params.INVOICE_TITLE as string
+  const documentId = params.INVOICE_TITLE as string
+  const isCreditNote = documentId?.startsWith('CN-')
+  const documentType = isCreditNote ? 'Credit Note' : 'Invoice'
 
   // Mock data - in a real app, this would fetch from your API
   const mockDocuments: Document[] = [
+    // Invoices
     {
       id: 'INV-2024-001',
       documentId: 'INV-2024-001',
@@ -210,6 +213,57 @@ export default function InvoiceDocumentPage() {
         { id: '1', description: 'Enterprise Software', quantity: 1, unit_price: 3000, tax_rate: 20, tax: 600, amount: 3600 },
         { id: '2', description: 'Implementation', quantity: 1, unit_price: 500, tax_rate: 20, tax: 100, amount: 600 }
       ]
+    },
+    // Credit Notes
+    {
+      id: 'CN-2024-001',
+      documentId: 'CN-2024-001',
+      customerName: 'Acme Corporation',
+      customerEmail: 'billing@acme.com',
+      customerAddress: '123 Business Street',
+      customerCity: 'London',
+      customerPostalCode: 'SW1A 1AA',
+      customerCountry: 'UK',
+      issueDate: '2024-01-20',
+      dueDate: undefined,
+      amount: -500.00,
+      currency: 'EUR',
+      status: 'sent',
+      businessName: 'Your Company Ltd',
+      streetAddress: '12 Example Avenue\nPontefract\nWF8 4LS',
+      contactEmail: 'hello@company.com',
+      contactPhone: '0712345678',
+      swift: 'SWIFT123',
+      bankAccountNumber: '12345678',
+      bankName: 'Example Bank',
+      items: [
+        { id: '1', description: 'Refund for cancelled consulting', quantity: 1, unit_price: -500, tax_rate: 20, tax: -100, amount: -600 }
+      ]
+    },
+    {
+      id: 'CN-2024-002',
+      documentId: 'CN-2024-002',
+      customerName: 'Tech Solutions Inc',
+      customerEmail: 'finance@techsolutions.com',
+      customerAddress: '456 Innovation Drive',
+      customerCity: 'Manchester',
+      customerPostalCode: 'M1 1AA',
+      customerCountry: 'UK',
+      issueDate: '2024-02-01',
+      dueDate: undefined,
+      amount: -250.00,
+      currency: 'EUR',
+      status: 'delivered',
+      businessName: 'Your Company Ltd',
+      streetAddress: '12 Example Avenue\nPontefract\nWF8 4LS',
+      contactEmail: 'hello@company.com',
+      contactPhone: '0712345678',
+      swift: 'SWIFT123',
+      bankAccountNumber: '12345678',
+      bankName: 'Example Bank',
+      items: [
+        { id: '1', description: 'Discount applied for early payment', quantity: 1, unit_price: -250, tax_rate: 20, tax: -50, amount: -300 }
+      ]
     }
   ]
 
@@ -218,12 +272,12 @@ export default function InvoiceDocumentPage() {
       setLoading(true)
       
       // Find document by ID (extracted from the URL parameter)
-      const foundDocument = mockDocuments.find(doc => doc.id === invoiceTitle)
+      const foundDocument = mockDocuments.find(doc => doc.id === documentId)
       
       if (!foundDocument) {
-        console.error('Document not found:', invoiceTitle)
+        console.error('Document not found:', documentId)
         // Redirect to overview if document not found
-        router.push('/dashboard/e-invoice/overview')
+        router.push('/dashboard/overview')
         return
       }
 
@@ -270,7 +324,7 @@ export default function InvoiceDocumentPage() {
           swift: foundDocument.swift,
           accountNumber: foundDocument.bankAccountNumber,
           bankName: foundDocument.bankName,
-          paymentReference: `INV-${foundDocument.documentId}`
+          paymentReference: foundDocument.documentId
         },
         terms: 'Payment due within 30 days of invoice date. Late payments may incur additional charges.',
         paymentInstructions: 'Please include the invoice number as payment reference.'
@@ -278,21 +332,21 @@ export default function InvoiceDocumentPage() {
 
       setInvoiceData(transformedData)
     } catch (error) {
-      console.error('Error fetching invoice data:', error)
-      router.push('/dashboard/e-invoice/overview')
+      console.error('Error fetching document data:', error)
+      router.push('/dashboard/overview')
     } finally {
       setLoading(false)
     }
-  }, [invoiceTitle, router])
+  }, [documentId, router])
 
   useEffect(() => {
-    if (invoiceTitle) {
+    if (documentId) {
       fetchDocumentData()
     }
-  }, [invoiceTitle, fetchDocumentData])
+  }, [documentId, fetchDocumentData])
 
   const handleBack = () => {
-    router.push('/dashboard/e-invoice/overview')
+    router.push('/dashboard/overview')
   }
 
   const handleEdit = () => {
@@ -412,7 +466,7 @@ export default function InvoiceDocumentPage() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading invoice data...</p>
+          <p className="text-gray-600">Loading {documentType.toLowerCase()} data...</p>
         </div>
       </div>
     )
@@ -423,8 +477,8 @@ export default function InvoiceDocumentPage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Invoice Not Found</h1>
-          <p className="text-gray-600 mb-6">The requested invoice could not be found.</p>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">{documentType} Not Found</h1>
+          <p className="text-gray-600 mb-6">The requested {documentType.toLowerCase()} could not be found.</p>
           <Button onClick={handleBack} className="flex items-center gap-2">
             <ArrowLeft className="w-4 h-4" />
             Back to Overview
@@ -453,7 +507,7 @@ export default function InvoiceDocumentPage() {
               Back to Overview
             </Button>
             <div>
-              <h1 className="text-2xl font-semibold text-gray-900">Invoice {document.documentId}</h1>
+              <h1 className="text-2xl font-semibold text-gray-900">{documentType} {document.documentId}</h1>
               <p className="text-sm text-gray-600">{document.customerName}</p>
             </div>
           </div>
@@ -517,13 +571,15 @@ export default function InvoiceDocumentPage() {
               </div>
             </div>
 
-            {/* Invoice Details */}
+            {/* Document Details */}
             <div>
-              <h2 className="text-2xl font-bold text-black mb-4">INVOICE</h2>
+              <h2 className="text-2xl font-bold text-black mb-4">{documentType.toUpperCase()}</h2>
               <div className="text-sm text-black space-y-2">
-                <div><span className="font-medium">Invoice No:</span> {invoiceData.documentId}</div>
+                <div><span className="font-medium">{documentType} No:</span> {invoiceData.documentId}</div>
                 <div><span className="font-medium">Issue Date:</span> {new Date(invoiceData.issueDate).toLocaleDateString('en-GB')}</div>
-                <div><span className="font-medium">Due Date:</span> {invoiceData.dueDate ? new Date(invoiceData.dueDate).toLocaleDateString('en-GB') : 'N/A'}</div>
+                {!isCreditNote && invoiceData.dueDate && (
+                  <div><span className="font-medium">Due Date:</span> {new Date(invoiceData.dueDate).toLocaleDateString('en-GB')}</div>
+                )}
               </div>
             </div>
           </div>

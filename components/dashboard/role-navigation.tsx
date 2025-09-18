@@ -121,7 +121,7 @@ export default function RoleNavigation({ className }: RoleNavigationProps) {
               Access regular dashboard features and manage your business entities.
             </div>
             <Button className="w-full" asChild>
-              <Link href="/dashboard/e-invoice/overview">
+              <Link href="/dashboard/overview">
                 Go to Dashboard
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>

@@ -51,7 +51,7 @@ export default function HomePage() {
         // Complete user - redirect to e-invoice overview
         console.log('🏠 HomePage - Complete user, redirecting to e-invoice overview')
         setHasRedirected(true)
-        router.push(`/${locale}/dashboard/e-invoice/overview`)
+        router.push(`/${locale}/dashboard/overview`)
         
       } else {
         // Loading state - wait for classification

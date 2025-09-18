@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
         if (tenantUser) {
           // User has a tenant, redirect to e-invoice overview
           console.log('Email confirmed - user has tenant, redirecting to e-invoice overview')
-          return NextResponse.redirect(`${origin}/en/dashboard/e-invoice/overview`)
+          return NextResponse.redirect(`${origin}/en/dashboard/overview`)
         } else {
           // User needs to complete onboarding, redirect to validate page first
           console.log('Email confirmed - new user needs validation page')

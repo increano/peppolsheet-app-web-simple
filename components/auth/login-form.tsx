@@ -14,7 +14,7 @@ interface LoginFormProps {
 }
 
 export const LoginForm: React.FC<LoginFormProps> = ({ 
-  redirectTo = '/dashboard/e-invoice/overview',
+  redirectTo = '/dashboard/overview',
   showSignUpLink = true 
 }) => {
   const router = useRouter();

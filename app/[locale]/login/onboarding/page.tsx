@@ -21,7 +21,7 @@ export default function TestOnboardingPage() {
   const locale = params.locale as string || 'en'
 
   const handleSuccess = () => {
-    router.push(`/${locale}/dashboard/e-invoice/overview`)
+    router.push(`/${locale}/dashboard/overview`)
   }
 
 

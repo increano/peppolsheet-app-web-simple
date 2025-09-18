@@ -34,7 +34,7 @@ export function RoleProtectedRoute({
   useEffect(() => {
     if (!loading && roleState === 'no_role') {
       console.log('🚨 User has no role, redirecting to e-invoice overview')
-      router.push(`/${locale}/dashboard/e-invoice/overview`)
+      router.push(`/${locale}/dashboard/overview`)
     }
   }, [roleState, loading, router, locale])
 
@@ -162,7 +162,7 @@ export function RolePublicRoute({ children }: { children: React.ReactNode }) {
         support: '/dashboard/support'
       }
       
-      const dashboardRoute = dashboardRoutes[roleUser.role] || '/dashboard/e-invoice/overview'
+      const dashboardRoute = dashboardRoutes[roleUser.role] || '/dashboard/overview'
       router.push(`/${locale}${dashboardRoute}`)
     }
   }, [roleUser, loading, roleState, router, locale])

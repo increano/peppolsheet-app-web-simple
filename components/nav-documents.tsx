@@ -43,7 +43,7 @@ export function NavDocuments({
 
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Documents</SidebarGroupLabel>
+      <SidebarGroupLabel>E-Invoice</SidebarGroupLabel>
       <SidebarMenu>
         {documentItems.map((item) => {
           const hasSubItems = item.items && item.items.length > 0

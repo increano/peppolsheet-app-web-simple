@@ -23,8 +23,8 @@ export default function EInvoiceOverviewPage() {
       {/* Content Area */}
       <div className="flex-1">
         <ActivityDashboard
-          onNewInvoice={() => router.push('/dashboard/e-invoice/add-new')}
-          onBulkImport={() => router.push('/dashboard/e-invoice/upload')}
+          onNewInvoice={() => router.push('/dashboard/add-new')}
+          onBulkImport={() => router.push('/dashboard/upload')}
           refreshTrigger={refreshTrigger}
         />
       </div>

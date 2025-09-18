@@ -169,7 +169,7 @@ export class BusinessDirectoryClient {
   async searchByName(
     companyName: string,
     countries: string[] = [],
-    pageSize: number = 10
+    pageSize: number = 15
   ): Promise<CompanySearchResponse> {
     const params: SearchParams = {
       query: companyName,

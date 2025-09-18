@@ -126,7 +126,7 @@ export function PublicRoute({ children }: { children: React.ReactNode }) {
         router.push(`/${locale}/login/recovery`)
       } else if (userState === 'complete_user') {
         console.log('🔄 PublicRoute - Complete user, redirecting to e-invoice overview')
-        router.push(`/${locale}/dashboard/e-invoice/overview`)
+        router.push(`/${locale}/dashboard/overview`)
       }
       // If userState is 'loading', don't redirect yet
     }

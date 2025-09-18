@@ -563,7 +563,7 @@ Michael,Brown,m.brown@globalsolutions.com,+1555123456,CEO,Executive,789 Business
 
         {/* Data Preview */}
         <div className="mb-6">
-          <DataTable columns={columns} data={csvData} pageSize={10} maxHeight="60vh" />
+          <DataTable columns={columns} data={csvData} pageSize={15} maxHeight="60vh" />
         </div>
     </div>
   )

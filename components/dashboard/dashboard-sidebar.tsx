@@ -18,7 +18,7 @@ interface NavigationItem {
 
 const navigationItems: NavigationItem[] = [
   {
-    href: '/en/dashboard/e-invoice/overview',
+    href: '/en/dashboard/overview',
     icon: BarChart3,
     label: 'Overview'
   },
@@ -33,8 +33,8 @@ export function DashboardSidebar() {
   const pathname = usePathname()
 
   const isActiveRoute = (href: string) => {
-    if (href === '/en/dashboard/e-invoice/overview') {
-      return pathname === '/en/dashboard/e-invoice/overview'
+    if (href === '/en/dashboard/overview') {
+      return pathname === '/en/dashboard/overview'
     }
     return pathname.startsWith(href) && href !== '#'
   }

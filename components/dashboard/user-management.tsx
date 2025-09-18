@@ -58,7 +58,7 @@ export function UserManagement() {
   const [filteredUsers, setFilteredUsers] = useState<UserTable[]>([]) // Filtered data for display
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
-  const [rowsPerPage, setRowsPerPage] = useState('5')
+  const [rowsPerPage, setRowsPerPage] = useState('15')
   const [activeFilter, setActiveFilter] = useState('all')
 
   const allStatusTabs = [
@@ -502,11 +502,9 @@ export function UserManagement() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="5">5</SelectItem>
-                  <SelectItem value="10">10</SelectItem>
+                  <SelectItem value="15">15</SelectItem>
                   <SelectItem value="20">20</SelectItem>
                   <SelectItem value="50">50</SelectItem>
-                  <SelectItem value="100">100</SelectItem>
                 </SelectContent>
               </Select>
             </div>

@@ -9,15 +9,15 @@ export default function UploadPage() {
 
   const handleClose = () => {
     // Redirect back to overview page when closing
-    router.push('/dashboard/e-invoice/overview')
+    router.push('/dashboard/overview')
   }
 
   return (
     <div className="min-h-screen">
       {/* Content Area */}
-      <div className="p-6">
+      
         <BulkImportInvoiceContent onClose={handleClose} />
-      </div>
+      
     </div>
   )
 }

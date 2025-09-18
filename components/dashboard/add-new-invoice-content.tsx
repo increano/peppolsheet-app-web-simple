@@ -844,49 +844,71 @@ export function AddNewInvoiceContent({ onClose, onSaveSuccess }: AddNewInvoiceCo
   }
 
   return (
-    <div className="w-full p-6">
+    <div className="w-full">
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-gray-900 mb-2">Create New Document</h2>
         <p className="text-gray-600">Create a new invoice, credit note or debit note</p>
       </div>
 
-      <div className="flex gap-8">
+      <div className="flex gap-8" style={{ minHeight: '80vh' }}>
         {/* Left Sidebar - Steps */}
-        <div className="w-64 flex-shrink-0">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">Document Steps</h3>
-          <div className="space-y-2">
+        <div className="w-64 flex-shrink-0 bg-gray-50 border-r border-gray-200 p-4 rounded-l-lg min-h-full">
+          <div className="mb-6">
+            <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
+              Create Document
+            </h3>
+          </div>
+          
+          <nav className="space-y-1">
             {steps.map((step, index) => {
-              const IconComponent = step.icon
               const isActive = currentStep === step.id
               const isCompleted = index < currentStepIndex
               
               return (
-                <button
+                <div
                   key={step.id}
-                  onClick={() => setCurrentStep(step.id as ManualStepType)}
-                  className={`w-full text-left p-3 rounded-lg transition-colors ${
+                  className={`p-3 rounded-lg transition-colors cursor-pointer ${
                     isActive
-                      ? 'bg-gray-900 text-white'
-                      : isCompleted
-                      ? 'bg-gray-100 text-gray-900 hover:bg-gray-200'
-                      : 'text-gray-600 hover:bg-gray-50'
+                      ? ''
+                      : 'hover:bg-gray-100'
                   }`}
+                  onClick={() => setCurrentStep(step.id as ManualStepType)}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="flex-1">
-                      <div className="font-medium">{step.name}</div>
-                      <div className={`text-sm ${isActive ? 'text-gray-300' : 'text-gray-500'}`}>
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
+                      isCompleted
+                        ? 'bg-green-500'
+                        : isActive
+                        ? 'bg-blue-600'
+                        : 'border-2 border-gray-300'
+                    }`}>
+                      {isCompleted ? (
+                        <Check className="w-3 h-3 text-white" />
+                      ) : (
+                        <span className={`text-xs font-medium ${
+                          isActive ? 'text-white' : 'text-gray-400'
+                        }`}>
+                          {index + 1}
+                        </span>
+                      )}
+                    </div>
+                    <div>
+                      <div className={`text-sm font-medium ${
+                        isActive ? 'text-blue-900' : 'text-gray-700'
+                      }`}>
+                        {step.name}
+                      </div>
+                      <div className={`text-xs ${
+                        isActive ? 'text-blue-700' : 'text-gray-500'
+                      }`}>
                         {step.description}
                       </div>
                     </div>
-                    {isActive && (
-                      <div className="w-2 h-2 bg-white rounded-full"></div>
-                    )}
                   </div>
-                </button>
+                </div>
               )
             })}
-          </div>
+          </nav>
         </div>
 
         {/* Right Content - Form */}
