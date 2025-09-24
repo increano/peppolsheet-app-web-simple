@@ -8,7 +8,7 @@ export default function OrganizationSearchPage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-semibold text-gray-900">Organization Search</h1>
+        <h1 className="text-xl font-bold">Organization Search</h1>
         <p className="text-sm text-gray-600 mt-1">
           Search for organizations and add them to your directory
         </p>

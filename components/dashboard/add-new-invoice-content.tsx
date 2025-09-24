@@ -6,7 +6,11 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
-import { FileText, User, CreditCard, Check } from 'lucide-react'
+import { Separator } from '@/components/ui/separator'
+import { FileText, User, CreditCard, Check, Trash2 } from 'lucide-react'
+import { PageSidebar, SidebarItem } from '@/components/ui/page-sidebar'
+import { DataTable } from '@/components/dashboard/data-table'
+import { ColumnDef } from "@tanstack/react-table"
 import { supabase } from '@/lib/auth-context'
 import { useAuth } from '@/lib/auth-context'
 
@@ -17,49 +21,13 @@ interface AddNewInvoiceContentProps {
 
 type ManualStepType = 'invoice-details' | 'customer-info' | 'line-items' | 'payment-terms' | 'review-save'
 
-type Contact = {
-  id: string
-  name: string
-  company: string
-  email: string
-  phone: string
-  status: string
-  lastContact: string
-  createdOn: string
-  activity: string
-  // Additional fields from database
-  first_name?: string
-  last_name?: string
-  job_title?: string
-  department?: string
-  business_entity_id?: string
-  is_primary?: boolean
-  iban?: string
-  swift?: string
-  bank_account_number?: string
-  shipping_street_address?: string
-  shipping_city?: string
-  shipping_postal_code?: string
-  shipping_country?: string
-  // Business entity address fields (fallback)
-  business_entity?: {
-    company_street_address?: string
-    company_city?: string
-    company_postal_code?: string
-    company_country?: string
-    names?: Array<{name: string}>
-  }
-}
 
 export function AddNewInvoiceContent({ onClose, onSaveSuccess }: AddNewInvoiceContentProps) {
   const { user } = useAuth()
   const [currentStep, setCurrentStep] = useState<ManualStepType>('invoice-details')
-  const [contacts, setContacts] = useState<Contact[]>([])
-  const [loadingContacts, setLoadingContacts] = useState(false)
   const [formData, setFormData] = useState({
     // Document Details
     documentType: 'invoice',
-    selectedContactId: '',
     invoiceNumber: '',
     invoiceDate: '',
     dueDate: '',
@@ -69,6 +37,8 @@ export function AddNewInvoiceContent({ onClose, onSaveSuccess }: AddNewInvoiceCo
     customerName: '',
     customerEmail: '',
     customerAddress: '',
+    customerAddress2: '',
+    customerPostbox: '',
     customerCity: '',
     customerPostalCode: '',
     customerCountry: '',
@@ -88,135 +58,16 @@ export function AddNewInvoiceContent({ onClose, onSaveSuccess }: AddNewInvoiceCo
   const [saveSuccess, setSaveSuccess] = useState(false)
 
   // Manual form steps
-  const steps = [
-    { id: 'invoice-details', name: 'Document Details', icon: FileText, description: 'Basic document information' },
-    { id: 'customer-info', name: 'Customer Information', icon: User, description: 'Customer details and billing address' },
-    { id: 'line-items', name: 'Line Items', icon: FileText, description: 'Products and services' },
-    { id: 'payment-terms', name: 'Payment Terms', icon: CreditCard, description: 'Payment terms and notes' },
-    { id: 'review-save', name: 'Review & Save', icon: Check, description: 'Final confirmation' },
+  const steps: SidebarItem[] = [
+    { id: 'invoice-details', name: 'Document Details', icon: FileText, description: '' },
+    { id: 'customer-info', name: 'Customer Information', icon: User, description: '' },
+    { id: 'line-items', name: 'Line Items', icon: FileText, description: '' },
+    { id: 'payment-terms', name: 'Payment Terms', icon: CreditCard, description: '' },
+    { id: 'review-save', name: 'Review & Save', icon: Check, description: '' },
   ]
 
   const currentStepIndex = steps.findIndex(step => step.id === currentStep)
 
-  // Fetch contacts when user is available
-  useEffect(() => {
-    if (user) {
-      fetchContacts()
-    }
-  }, [user])
-
-  const fetchContacts = async () => {
-    if (!user) {
-      console.log('No user available for fetching contacts')
-      return
-    }
-
-    try {
-      setLoadingContacts(true)
-      console.log('🔍 Fetching contacts for document creation...')
-      console.log('🔍 User object:', user)
-      
-      // Get tenant_id from tenant_users table (correct approach)
-      console.log('🔍 Looking up tenant for user:', user.id)
-      const { data: tenantUser, error: tenantError } = await supabase
-        .from('tenant_users')
-        .select('tenant_id')
-        .eq('user_id', user.id)
-        .eq('status', 'active')
-        .single()
-
-      if (tenantError || !tenantUser) {
-        console.error('❌ Tenant lookup error:', tenantError?.message)
-        console.error('Available user properties:', Object.keys(user))
-        return
-      }
-
-      const tenantId = tenantUser.tenant_id
-      console.log('✅ Tenant found:', tenantId)
-
-      // First, let's check if we can see any contacts at all (without tenant filter)
-      console.log('🔍 Testing: Fetching all contacts (no tenant filter)...')
-      const { data: allContactsTest, error: allContactsError } = await supabase
-        .from('contacts')
-        .select('id, first_name, last_name, email, tenant_id')
-        .limit(5)
-
-      console.log('📊 All contacts test:', allContactsTest?.length || 0, allContactsTest)
-      
-      // Now fetch with tenant filter including business entity information
-      console.log('🔍 Fetching contacts with tenant filter...')
-      const { data: contactsData, error: contactsError } = await supabase
-        .from('contacts')
-        .select(`
-          *,
-          business_entities (
-            company_street_address,
-            company_city,
-            company_postal_code,
-            company_country,
-            names
-          )
-        `)
-        .eq('tenant_id', tenantId)
-        .order('created_at', { ascending: false })
-
-      if (contactsError) {
-        console.error('Error fetching contacts:', contactsError)
-        return
-      }
-
-      console.log('📊 Contacts fetched:', contactsData?.length || 0)
-      console.log('📊 Raw contacts data:', contactsData)
-
-      // Transform data to match Contact type
-      const transformedContacts: Contact[] = (contactsData || []).map((contact: any) => {
-        const businessEntity = contact.business_entities
-        const companyName = businessEntity?.names?.[0]?.name || 'Unknown Company'
-        
-        return {
-          id: contact.id,
-          name: `${contact.first_name || ''} ${contact.last_name || ''}`.trim() || 'Unknown Name',
-          company: companyName,
-          email: contact.email || '',
-          phone: contact.phone || '',
-          status: contact.status || 'Active',
-          lastContact: new Date(contact.updated_at).toLocaleDateString(),
-          createdOn: new Date(contact.created_at).toLocaleDateString(),
-          activity: contact.is_primary ? 'Primary Contact' : 'Contact',
-          // Additional fields
-          first_name: contact.first_name,
-          last_name: contact.last_name,
-          job_title: contact.job_title,
-          department: contact.department,
-          business_entity_id: contact.business_entity_id,
-          is_primary: contact.is_primary,
-          iban: contact.iban,
-          swift: contact.swift,
-          bank_account_number: contact.bank_account_number,
-          shipping_street_address: contact.shipping_street_address,
-          shipping_city: contact.shipping_city,
-          shipping_postal_code: contact.shipping_postal_code,
-          shipping_country: contact.shipping_country,
-          // Business entity information for fallback
-          business_entity: businessEntity
-        }
-      })
-
-      console.log('📊 Transformed contacts:', transformedContacts)
-      console.log('📊 Setting contacts state with', transformedContacts.length, 'contacts')
-      
-      // Only update contacts if we actually found some
-      if (transformedContacts.length > 0) {
-        setContacts(transformedContacts)
-      } else {
-        console.log('📊 No contacts found from database, keeping existing contacts')
-      }
-    } catch (error) {
-      console.error('Error fetching contacts:', error)
-    } finally {
-      setLoadingContacts(false)
-    }
-  }
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({
@@ -225,41 +76,6 @@ export function AddNewInvoiceContent({ onClose, onSaveSuccess }: AddNewInvoiceCo
     }))
   }
 
-  const handleContactSelect = (contactId: string) => {
-    const selectedContact = contacts.find(contact => contact.id === contactId)
-    if (selectedContact) {
-      // Use contact's personal address if available, otherwise fallback to business entity address
-      const usePersonalAddress = selectedContact.shipping_street_address || selectedContact.shipping_city || selectedContact.shipping_postal_code
-      
-      const customerAddress = usePersonalAddress 
-        ? selectedContact.shipping_street_address || ''
-        : selectedContact.business_entity?.company_street_address || ''
-        
-      const customerCity = usePersonalAddress
-        ? selectedContact.shipping_city || ''
-        : selectedContact.business_entity?.company_city || ''
-        
-      const customerPostalCode = usePersonalAddress
-        ? selectedContact.shipping_postal_code || ''
-        : selectedContact.business_entity?.company_postal_code || ''
-        
-      const customerCountry = usePersonalAddress
-        ? selectedContact.shipping_country || ''
-        : selectedContact.business_entity?.company_country || ''
-
-      setFormData(prev => ({
-        ...prev,
-        selectedContactId: contactId,
-        // Auto-fill customer information
-        customerName: selectedContact.name,
-        customerEmail: selectedContact.email,
-        customerAddress,
-        customerCity,
-        customerPostalCode,
-        customerCountry
-      }))
-    }
-  }
 
   const handleLineItemChange = (index: number, field: string, value: string | number) => {
     const newLineItems = [...formData.lineItems]
@@ -425,103 +241,111 @@ export function AddNewInvoiceContent({ onClose, onSaveSuccess }: AddNewInvoiceCo
   }
 
   const renderInvoiceDetailsStep = () => {
-    console.log('🔍 Rendering invoice details step, contacts count:', contacts.length)
-    console.log('🔍 Contacts array:', contacts)
-    console.log('🔍 LoadingContacts:', loadingContacts)
     return (
     <div className="space-y-6">
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <Label htmlFor="documentType">Document Type *</Label>
-          <Select value={formData.documentType} onValueChange={(value) => handleInputChange('documentType', value)}>
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="invoice">Invoice</SelectItem>
-              <SelectItem value="credit-note">Credit Note</SelectItem>
-              <SelectItem value="debit-note">Debit Note</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+      <div>
+        <h2 className="text-sm font-semibold mb-6">Document Type & Number</h2>
+        
+        <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <p className="font-medium text-sm">Document Type</p>
+              <p className="text-sm text-gray-600">Choose the type of document you're creating</p>
+            </div>
+            <div className="w-48">
+              <Select value={formData.documentType} onValueChange={(value) => handleInputChange('documentType', value)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="invoice">Invoice</SelectItem>
+                  <SelectItem value="credit-note">Credit Note</SelectItem>
+                  <SelectItem value="debit-note">Debit Note</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
 
-        <div>
-          <Label htmlFor="selectedContact">Select Contact (Optional)</Label>
-          <Select 
-            value={formData.selectedContactId} 
-            onValueChange={handleContactSelect}
-            disabled={loadingContacts}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder={loadingContacts ? "Loading contacts..." : "Choose a contact to auto-fill information"} />
-            </SelectTrigger>
-          <SelectContent>
-            {contacts.length === 0 ? (
-              <SelectItem value="no-contacts" disabled>
-                No contacts found
-              </SelectItem>
-            ) : (
-              contacts.map((contact) => (
-                <SelectItem key={contact.id} value={contact.id}>
-                  {contact.name}
-                </SelectItem>
-              ))
-            )}
-          </SelectContent>
-          </Select>
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <p className="font-medium text-sm">Document Number</p>
+              <p className="text-sm text-gray-600">Unique identifier for this document</p>
+            </div>
+            <div className="w-48">
+              <Input
+                id="invoiceNumber"
+                value={formData.invoiceNumber}
+                onChange={(e) => handleInputChange('invoiceNumber', e.target.value)}
+                placeholder={formData.documentType === 'invoice' ? 'e.g., INV-2025-001' : formData.documentType === 'credit-note' ? 'e.g., CN-2025-001' : 'e.g., DN-2025-001'}
+              />
+            </div>
+          </div>
         </div>
       </div>
-      
-      {formData.selectedContactId && (
-        <p className="text-sm text-green-600">
-          ✓ Contact selected - customer information will be auto-filled
-        </p>
-      )}
-      
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <Label htmlFor="invoiceNumber">Document Number *</Label>
-          <Input
-            id="invoiceNumber"
-            value={formData.invoiceNumber}
-            onChange={(e) => handleInputChange('invoiceNumber', e.target.value)}
-            placeholder={formData.documentType === 'invoice' ? 'e.g., INV-2025-001' : formData.documentType === 'credit-note' ? 'e.g., CN-2025-001' : 'e.g., DN-2025-001'}
-          />
-        </div>
-        <div>
-          <Label htmlFor="currency">Currency</Label>
-          <Select value={formData.currency} onValueChange={(value) => handleInputChange('currency', value)}>
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="USD">USD</SelectItem>
-              <SelectItem value="EUR">EUR</SelectItem>
-              <SelectItem value="GBP">GBP</SelectItem>
-              <SelectItem value="CAD">CAD</SelectItem>
-            </SelectContent>
-          </Select>
+
+      <Separator />
+
+      <div>
+        <h2 className="text-sm font-semibold mb-6">Dates</h2>
+        
+        <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <p className="font-medium text-sm">Document Date</p>
+              <p className="text-sm text-gray-600">The date when this document was issued</p>
+            </div>
+            <div className="w-48">
+              <Input
+                id="invoiceDate"
+                type="date"
+                value={formData.invoiceDate}
+                onChange={(e) => handleInputChange('invoiceDate', e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <p className="font-medium text-sm">Due Date</p>
+              <p className="text-sm text-gray-600">The date when payment is due</p>
+            </div>
+            <div className="w-48">
+              <Input
+                id="dueDate"
+                type="date"
+                value={formData.dueDate}
+                onChange={(e) => handleInputChange('dueDate', e.target.value)}
+              />
+            </div>
+          </div>
         </div>
       </div>
-      
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <Label htmlFor="invoiceDate">Invoice Date *</Label>
-          <Input
-            id="invoiceDate"
-            type="date"
-            value={formData.invoiceDate}
-            onChange={(e) => handleInputChange('invoiceDate', e.target.value)}
-          />
-        </div>
-        <div>
-          <Label htmlFor="dueDate">Due Date *</Label>
-          <Input
-            id="dueDate"
-            type="date"
-            value={formData.dueDate}
-            onChange={(e) => handleInputChange('dueDate', e.target.value)}
-          />
+
+      <Separator />
+
+      <div>
+        <h2 className="text-sm font-semibold mb-6">Currency</h2>
+        
+        <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <p className="font-medium text-sm">Currency</p>
+              <p className="text-sm text-gray-600">The currency for all amounts in this document</p>
+            </div>
+            <div className="w-48">
+              <Select value={formData.currency} onValueChange={(value) => handleInputChange('currency', value)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="USD">USD</SelectItem>
+                  <SelectItem value="EUR">EUR</SelectItem>
+                  <SelectItem value="GBP">GBP</SelectItem>
+                  <SelectItem value="CAD">CAD</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -531,162 +355,253 @@ export function AddNewInvoiceContent({ onClose, onSaveSuccess }: AddNewInvoiceCo
   const renderCustomerInfoStep = () => (
     <div className="space-y-6">
       <div>
-        <Label htmlFor="customerName">Customer Name *</Label>
-        <Input
-          id="customerName"
-          value={formData.customerName}
-          onChange={(e) => handleInputChange('customerName', e.target.value)}
-          placeholder="Enter customer name"
-        />
-      </div>
-      
-      <div>
-        <Label htmlFor="customerEmail">Customer Email</Label>
-        <Input
-          id="customerEmail"
-          type="email"
-          value={formData.customerEmail}
-          onChange={(e) => handleInputChange('customerEmail', e.target.value)}
-          placeholder="Enter customer email"
-        />
-      </div>
-      
-      <div>
-        <Label htmlFor="customerAddress">Billing Address</Label>
-        <Textarea
-          id="customerAddress"
-          value={formData.customerAddress}
-          onChange={(e) => handleInputChange('customerAddress', e.target.value)}
-          placeholder="Enter billing address"
-          rows={3}
-        />
-      </div>
-      
-      <div>
-        <Label htmlFor="customerCity">City</Label>
-        <Input
-          id="customerCity"
-          value={formData.customerCity}
-          onChange={(e) => handleInputChange('customerCity', e.target.value)}
-          placeholder="Enter city"
-        />
-      </div>
-      
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <Label htmlFor="customerPostalCode">Postal Code</Label>
-          <Input
-            id="customerPostalCode"
-            value={formData.customerPostalCode}
-            onChange={(e) => handleInputChange('customerPostalCode', e.target.value)}
-            placeholder="Enter postal code"
-          />
+        <h2 className="text-sm font-semibold mb-6">Name & Email</h2>
+        
+        <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <p className="font-medium text-sm">Customer Name</p>
+              <p className="text-sm text-gray-600">Full name of the customer or company</p>
+            </div>
+            <div className="w-48">
+              <Input
+                id="customerName"
+                value={formData.customerName}
+                onChange={(e) => handleInputChange('customerName', e.target.value)}
+                placeholder="Enter customer name"
+              />
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <p className="font-medium text-sm">Customer Email</p>
+              <p className="text-sm text-gray-600">Email address for sending the document</p>
+            </div>
+            <div className="w-48">
+              <Input
+                id="customerEmail"
+                type="email"
+                value={formData.customerEmail}
+                onChange={(e) => handleInputChange('customerEmail', e.target.value)}
+                placeholder="Enter customer email"
+              />
+            </div>
+          </div>
         </div>
-        <div>
-          <Label htmlFor="customerCountry">Country</Label>
-          <Input
-            id="customerCountry"
-            value={formData.customerCountry}
-            onChange={(e) => handleInputChange('customerCountry', e.target.value)}
-            placeholder="Enter country"
-          />
+      </div>
+
+      <Separator />
+
+      <div>
+        <h2 className="text-sm font-semibold mb-6">Billing Address</h2>
+        
+        <div className="space-y-6">
+            <div>
+              <p className="font-medium text-sm mb-2">Street Address</p>
+              <p className="text-sm text-gray-600 mb-3">Complete billing street address for the customer</p>
+              <div className="space-y-3">
+                <Input
+                  id="customerAddress"
+                  value={formData.customerAddress}
+                  onChange={(e) => handleInputChange('customerAddress', e.target.value)}
+                  placeholder="Enter street address line 1"
+                />
+                <Input
+                  id="customerAddress2"
+                  value={formData.customerAddress2 || ''}
+                  onChange={(e) => handleInputChange('customerAddress2', e.target.value)}
+                  placeholder="Enter street address line 2 (optional)"
+                />
+              </div>
+            </div>
+
+          <div>
+            <p className="font-medium text-sm mb-2">Postbox</p>
+            <p className="text-sm text-gray-600 mb-3">Postbox or PO Box number</p>
+            <Input
+              id="customerPostbox"
+              value={formData.customerPostbox || ''}
+              onChange={(e) => handleInputChange('customerPostbox', e.target.value)}
+              placeholder="Enter postbox number"
+            />
+          </div>
+
+          <div>
+            <p className="font-medium text-sm mb-2">Postal Code</p>
+            <p className="text-sm text-gray-600 mb-3">Postal or ZIP code for the address</p>
+            <Input
+              id="customerPostalCode"
+              value={formData.customerPostalCode}
+              onChange={(e) => handleInputChange('customerPostalCode', e.target.value)}
+              placeholder="Enter postal code"
+            />
+          </div>
+
+          <div>
+            <p className="font-medium text-sm mb-2">City</p>
+            <p className="text-sm text-gray-600 mb-3">City where the customer is located</p>
+            <Input
+              id="customerCity"
+              value={formData.customerCity}
+              onChange={(e) => handleInputChange('customerCity', e.target.value)}
+              placeholder="Enter city"
+            />
+          </div>
+
+          <div>
+            <p className="font-medium text-sm mb-2">Country</p>
+            <p className="text-sm text-gray-600 mb-3">Country where the customer is located</p>
+            <Input
+              id="customerCountry"
+              value={formData.customerCountry}
+              onChange={(e) => handleInputChange('customerCountry', e.target.value)}
+              placeholder="Enter country"
+            />
+          </div>
         </div>
       </div>
     </div>
   )
 
-  const renderLineItemsStep = () => (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h4 className="text-lg font-medium">Line Items</h4>
-        <Button onClick={addLineItem} variant="outline" size="sm">
-          Add Item
-        </Button>
-      </div>
-      
-      {formData.lineItems.map((item, index) => (
-        <div key={index} className="border rounded-lg p-4 space-y-4">
-          <div className="flex justify-between items-center">
-            <span className="text-sm font-medium">Item {index + 1}</span>
-            {formData.lineItems.length > 1 && (
-              <Button 
-                onClick={() => removeLineItem(index)} 
-                variant="outline" 
-                size="sm"
-                className="text-red-600 hover:text-red-700"
-              >
-                Remove
-              </Button>
-            )}
-          </div>
-          
-          <div>
-            <Label htmlFor={`description-${index}`}>Description *</Label>
+  const renderLineItemsStep = () => {
+    // Column definitions for the line items data table
+    const columns: ColumnDef<any>[] = [
+      {
+        accessorKey: "description",
+        header: "Description",
+        cell: ({ row, table }) => {
+          const index = row.index
+          return (
             <Input
-              id={`description-${index}`}
-              value={item.description}
+              value={formData.lineItems[index]?.description || ''}
               onChange={(e) => handleLineItemChange(index, 'description', e.target.value)}
               placeholder="Enter item description"
+              className="min-w-[200px]"
+            />
+          )
+        },
+      },
+      {
+        accessorKey: "quantity",
+        header: "Quantity",
+        cell: ({ row }) => {
+          const index = row.index
+          return (
+            <Input
+              type="number"
+              min="1"
+              value={formData.lineItems[index]?.quantity || 1}
+              onChange={(e) => handleLineItemChange(index, 'quantity', Number(e.target.value))}
+              className="w-20"
+            />
+          )
+        },
+      },
+      {
+        accessorKey: "unit",
+        header: "Unit",
+        cell: ({ row }) => {
+          const index = row.index
+          return (
+            <Input
+              value={formData.lineItems[index]?.unit || 'pcs'}
+              onChange={(e) => handleLineItemChange(index, 'unit', e.target.value)}
+              placeholder="pcs, hrs, kg, etc."
+              className="w-20"
+            />
+          )
+        },
+      },
+      {
+        accessorKey: "unitPrice",
+        header: "Unit Price",
+        cell: ({ row }) => {
+          const index = row.index
+          return (
+            <Input
+              type="number"
+              min="0"
+              step="0.01"
+              value={formData.lineItems[index]?.unitPrice || 0}
+              onChange={(e) => handleLineItemChange(index, 'unitPrice', Number(e.target.value))}
+              className="w-24"
+            />
+          )
+        },
+      },
+      {
+        accessorKey: "taxRate",
+        header: "Tax Rate (%)",
+        cell: ({ row }) => {
+          const index = row.index
+          return (
+            <Input
+              type="number"
+              min="0"
+              max="100"
+              step="0.01"
+              value={formData.lineItems[index]?.taxRate || 0}
+              onChange={(e) => handleLineItemChange(index, 'taxRate', Number(e.target.value))}
+              className="w-20"
+            />
+          )
+        },
+      },
+      {
+        accessorKey: "amount",
+        header: "Total Amount",
+        cell: ({ row }) => {
+          const index = row.index
+          const item = formData.lineItems[index]
+          return (
+            <div className="p-2 bg-gray-50 rounded border text-sm font-medium min-w-[100px]">
+              {formData.currency} {item?.amount?.toFixed(2) || '0.00'}
+            </div>
+          )
+        },
+      },
+      {
+        id: "actions",
+        header: "Actions",
+        cell: ({ row }) => {
+          const index = row.index
+          return (
+            <Button
+              onClick={() => removeLineItem(index)}
+              variant="outline"
+              size="sm"
+              className="text-red-600 hover:text-red-700"
+              disabled={formData.lineItems.length <= 1}
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          )
+        },
+      },
+    ]
+
+    return (
+      <div className="space-y-6">
+        <div>
+          <div className="mb-4">
+            <DataTable 
+              columns={columns} 
+              data={formData.lineItems} 
+              pageSize={10} 
+              maxHeight="400px"
             />
           </div>
           
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor={`quantity-${index}`}>Quantity</Label>
-              <Input
-                id={`quantity-${index}`}
-                type="number"
-                min="1"
-                value={item.quantity}
-                onChange={(e) => handleLineItemChange(index, 'quantity', Number(e.target.value))}
-              />
-            </div>
-            <div>
-              <Label htmlFor={`unit-${index}`}>Unit</Label>
-              <Input
-                id={`unit-${index}`}
-                value={item.unit}
-                onChange={(e) => handleLineItemChange(index, 'unit', e.target.value)}
-                placeholder="pcs, hrs, kg, etc."
-              />
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-3 gap-4">
-            <div>
-              <Label htmlFor={`unitPrice-${index}`}>Unit Price</Label>
-              <Input
-                id={`unitPrice-${index}`}
-                type="number"
-                min="0"
-                step="0.01"
-                value={item.unitPrice}
-                onChange={(e) => handleLineItemChange(index, 'unitPrice', Number(e.target.value))}
-              />
-            </div>
-            <div>
-              <Label htmlFor={`taxRate-${index}`}>Tax Rate (%)</Label>
-              <Input
-                id={`taxRate-${index}`}
-                type="number"
-                min="0"
-                max="100"
-                step="0.01"
-                value={item.taxRate}
-                onChange={(e) => handleLineItemChange(index, 'taxRate', Number(e.target.value))}
-              />
-            </div>
-            <div>
-              <Label>Total Amount</Label>
-              <div className="p-2 bg-gray-50 rounded border">
-                {formData.currency} {item.amount.toFixed(2)}
-              </div>
-            </div>
+          <div className="flex justify-end">
+            <Button onClick={addLineItem} variant="outline" size="sm">
+              Add Item
+            </Button>
           </div>
         </div>
-      ))}
-      
-      <div className="border-t pt-4">
+        
+        <Separator />
+        
         <div className="flex justify-end">
           <div className="text-right">
             <div className="text-lg font-medium">
@@ -695,8 +610,8 @@ export function AddNewInvoiceContent({ onClose, onSaveSuccess }: AddNewInvoiceCo
           </div>
         </div>
       </div>
-    </div>
-  )
+    )
+  }
 
   const renderPaymentTermsStep = () => (
     <div className="space-y-6">
@@ -844,80 +759,23 @@ export function AddNewInvoiceContent({ onClose, onSaveSuccess }: AddNewInvoiceCo
   }
 
   return (
-    <div className="w-full">
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Create New Document</h2>
-        <p className="text-gray-600">Create a new invoice, credit note or debit note</p>
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-xl font-bold">Create New Document</h1>
+        <p className="text-sm text-gray-600 mt-1">Create a new invoice, credit note or debit note</p>
       </div>
 
-      <div className="flex gap-8" style={{ minHeight: '80vh' }}>
-        {/* Left Sidebar - Steps */}
-        <div className="w-64 flex-shrink-0 bg-gray-50 border-r border-gray-200 p-4 rounded-l-lg min-h-full">
-          <div className="mb-6">
-            <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
-              Create Document
-            </h3>
-          </div>
-          
-          <nav className="space-y-1">
-            {steps.map((step, index) => {
-              const isActive = currentStep === step.id
-              const isCompleted = index < currentStepIndex
-              
-              return (
-                <div
-                  key={step.id}
-                  className={`p-3 rounded-lg transition-colors cursor-pointer ${
-                    isActive
-                      ? ''
-                      : 'hover:bg-gray-100'
-                  }`}
-                  onClick={() => setCurrentStep(step.id as ManualStepType)}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
-                      isCompleted
-                        ? 'bg-green-500'
-                        : isActive
-                        ? 'bg-blue-600'
-                        : 'border-2 border-gray-300'
-                    }`}>
-                      {isCompleted ? (
-                        <Check className="w-3 h-3 text-white" />
-                      ) : (
-                        <span className={`text-xs font-medium ${
-                          isActive ? 'text-white' : 'text-gray-400'
-                        }`}>
-                          {index + 1}
-                        </span>
-                      )}
-                    </div>
-                    <div>
-                      <div className={`text-sm font-medium ${
-                        isActive ? 'text-blue-900' : 'text-gray-700'
-                      }`}>
-                        {step.name}
-                      </div>
-                      <div className={`text-xs ${
-                        isActive ? 'text-blue-700' : 'text-gray-500'
-                      }`}>
-                        {step.description}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )
-            })}
-          </nav>
-        </div>
-
-        {/* Right Content - Form */}
-        <div className="flex-1">
-          <div className="mb-6">
-            <h3 className="text-xl font-bold text-gray-900 mb-2">
+      <PageSidebar
+        title="Create Document"
+        items={steps}
+        activeItem={currentStep}
+        onItemClick={(itemId) => setCurrentStep(itemId as ManualStepType)}
+      >
+        <div className="space-y-4 p-4">
+          <div>
+            <h2 className="text-sm font-semibold mb-6">
               {steps[currentStepIndex]?.name}
-            </h3>
-            <p className="text-gray-600">{steps[currentStepIndex]?.description}</p>
+            </h2>
           </div>
           
           {renderManualStep()}
@@ -953,7 +811,7 @@ export function AddNewInvoiceContent({ onClose, onSaveSuccess }: AddNewInvoiceCo
             </Button>
           </div>
         </div>
-      </div>
+      </PageSidebar>
     </div>
   )
 }

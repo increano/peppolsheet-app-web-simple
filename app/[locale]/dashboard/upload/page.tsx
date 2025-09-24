@@ -1,7 +1,7 @@
 "use client"
 
 import React from 'react'
-import { BulkImportInvoiceContent } from "@/components/dashboard/bulk-import-invoice-content"
+import { BulkImportDocumentContent } from "@/components/dashboard/bulk-import-invoice-content"
 import { useRouter } from 'next/navigation'
 
 export default function UploadPage() {
@@ -16,7 +16,7 @@ export default function UploadPage() {
     <div className="min-h-screen">
       {/* Content Area */}
       
-        <BulkImportInvoiceContent onClose={handleClose} />
+        <BulkImportDocumentContent onClose={handleClose} />
       
     </div>
   )

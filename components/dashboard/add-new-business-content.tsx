@@ -7,11 +7,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Badge } from '@/components/ui/badge'
 import {
   Search,
-  Check,
   Building2,
-  MapPin,
-  CreditCard,
-  FileText,
   Trash2,
   ExternalLink
 } from 'lucide-react'
@@ -44,13 +40,12 @@ interface AddNewBusinessContentProps {
   onClose?: () => void
 }
 
-type TabType = 'search' | 'manual'
-type ManualStepType = 'company-details' | 'contact-info' | 'business-details' | 'billing-preferences' | 'review-save'
+type TabType = 'search'
 
 export function AddNewBusinessContent({ onClose }: AddNewBusinessContentProps) {
   const { supabase } = useRoleAuth()
   const router = useRouter()
-  const [activeTab, setActiveTab] = useState<TabType>('search')
+  const [activeTab] = useState<TabType>('search')
   const [searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState<Company[]>([])
   const [selectedCompanies, setSelectedCompanies] = useState<Company[]>([])
@@ -73,24 +68,6 @@ export function AddNewBusinessContent({ onClose }: AddNewBusinessContentProps) {
       document.removeEventListener('mousedown', handleClickOutside)
     }
   }, [])
-  
-  // Manual form state
-  const [currentStep, setCurrentStep] = useState<ManualStepType>('company-details')
-  const [formData, setFormData] = useState({
-    companyName: '',
-    industry: '',
-    streetAddress: '',
-    city: '',
-    zipCode: '',
-    country: '',
-    phone: '',
-    email: '',
-    taxId: '',
-    website: '',
-    currency: 'USD',
-    preferredContact: 'Email'
-  })
-  const [isSubmittingManual, setIsSubmittingManual] = useState(false)
 
 
   // Real API search function for European companies using v2 endpoint
@@ -337,68 +314,6 @@ export function AddNewBusinessContent({ onClose }: AddNewBusinessContentProps) {
     }
   }
 
-  // Handle manual form submission
-  const handleManualFormSubmit = async () => {
-    if (!formData.companyName.trim()) {
-      alert('Please enter a company name')
-      return
-    }
-
-    setIsSubmittingManual(true)
-
-    try {
-      // Get the current session
-      const { data: { session } } = await supabase.auth.getSession()
-      if (!session) {
-        throw new Error('No active session')
-      }
-
-      // Prepare data for business_entities_staging table
-      const stagingData = {
-        names: [{ name: formData.companyName }], // JSONB array with company name
-        tax_id: formData.taxId || null,
-        email: formData.email || null,
-        website: formData.website || null,
-        industries: formData.industry ? [{ industry_name: formData.industry }] : null, // JSONB array with industry
-        company_street_address: formData.streetAddress || null,
-        company_city: formData.city || null,
-        company_postal_code: formData.zipCode || null,
-        company_country: formData.country || 'BE',
-        currency: formData.currency || 'USD', // Default from schema
-        submitted_by: session.user.id,
-        verification_status: 'pending',
-        source_type: 'manual'
-      }
-
-      console.log('Submitting to business_entities_staging:', stagingData)
-      console.log('Field names being sent:', Object.keys(stagingData))
-
-      // Insert into business_entities_staging table
-      const { data, error } = await supabase
-        .from('business_entities_staging')
-        .insert(stagingData)
-        .select()
-
-      if (error) {
-        console.error('Error saving to staging:', error)
-        throw new Error(`Failed to save company: ${error.message}`)
-      }
-
-      console.log('Successfully saved to staging:', data)
-
-      // Show success message
-      alert('Company successfully submitted for review! It has been saved to the staging area and will be reviewed by administrators.')
-
-      // Redirect to Company List section
-      router.push('/en/dashboard/e-invoice/companies')
-
-    } catch (error) {
-      console.error('Error submitting manual form:', error)
-      alert(`Error saving company: ${error instanceof Error ? error.message : 'Unknown error'}`)
-    } finally {
-      setIsSubmittingManual(false)
-    }
-  }
 
   // Function to trim text to specified length
   const trimText = (text: string, maxLength: number = 30) => {
@@ -520,16 +435,6 @@ export function AddNewBusinessContent({ onClose }: AddNewBusinessContentProps) {
     },
   ], [])
 
-  // Manual form steps
-  const steps = [
-    { id: 'company-details', name: 'Company Details', icon: Building2, description: 'Basic company information' },
-    { id: 'contact-info', name: 'Contact Information', icon: MapPin, description: 'Address and contact details' },
-    { id: 'business-details', name: 'Business Details', icon: FileText, description: 'Tax ID and registration' },
-            { id: 'billing-preferences', name: 'Billing Preferences', icon: CreditCard, description: 'Currency and contact preferences' },
-    { id: 'review-save', name: 'Review & Save', icon: Check, description: 'Final confirmation' },
-  ]
-
-  const currentStepIndex = steps.findIndex(step => step.id === currentStep)
 
     // Render search tab content
   const renderSearchTab = () => (
@@ -622,7 +527,7 @@ export function AddNewBusinessContent({ onClose }: AddNewBusinessContentProps) {
                     <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-sm font-medium flex-shrink-0">
                       {company.logo}
                     </div>
-                                         <div className="flex-1 min-w-0">
+                      <div className="flex-1 min-w-0">
                        <div className="font-medium text-sm truncate">{company.name}</div>
                        <div className="text-xs text-gray-500 truncate">
                          {company.domain && `${company.domain} • `}{trimText(company.industry)} • {company.location}
@@ -641,29 +546,12 @@ export function AddNewBusinessContent({ onClose }: AddNewBusinessContentProps) {
                 ))}
                 
                 {/* Manual Add Link at Bottom */}
-                <div className="p-3 border-t border-gray-100">
-                  <Button 
-                    variant="link" 
-                    size="sm" 
-                    className="w-full justify-center text-sm"
-                    onClick={() => setActiveTab('manual')}
-                  >
-                    Not found? Add company manually →
-                  </Button>
-                </div>
               </div>
             )}
             
             {!isSearching && searchQuery.length >= 3 && searchResults.length === 0 && (
               <div className="p-4 text-center">
-                <p className="text-sm text-gray-600 mb-2">No companies found for "{searchQuery}"</p>
-                <Button 
-                  variant="link" 
-                  size="sm" 
-                  onClick={() => setActiveTab('manual')}
-                >
-                  Add company manually →
-                </Button>
+                <p className="text-sm text-gray-600">No companies found for "{searchQuery}"</p>
               </div>
             )}
           </div>
@@ -698,329 +586,11 @@ export function AddNewBusinessContent({ onClose }: AddNewBusinessContentProps) {
     </div>
   )
 
-  // Render manual form step
-  const renderManualStep = () => {
-    switch (currentStep) {
-      case 'company-details':
-        return (
-          <div className="space-y-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Company Name *
-              </label>
-              <Input
-                placeholder="Enter company name"
-                value={formData.companyName}
-                onChange={(e) => setFormData({...formData, companyName: e.target.value})}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Industry
-              </label>
-              <Input
-                placeholder="e.g., Technology, Healthcare"
-                value={formData.industry}
-                onChange={(e) => setFormData({...formData, industry: e.target.value})}
-              />
-            </div>
-
-          </div>
-        )
-      
-      case 'contact-info':
-                return (
-          <div className="space-y-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Street Address
-              </label>
-              <Input
-                placeholder="Enter street address"
-                value={formData.streetAddress}
-                onChange={(e) => setFormData({...formData, streetAddress: e.target.value})}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                City
-              </label>
-              <Input
-                placeholder="City"
-                value={formData.city}
-                onChange={(e) => setFormData({...formData, city: e.target.value})}
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  ZIP/Postal Code
-                </label>
-                <Input
-                  placeholder="ZIP Code"
-                  value={formData.zipCode}
-                  onChange={(e) => setFormData({...formData, zipCode: e.target.value})}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Country
-                </label>
-                <Input
-                  placeholder="Country"
-                  value={formData.country}
-                  onChange={(e) => setFormData({...formData, country: e.target.value})}
-                />
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Phone Number
-                </label>
-                <Input
-                  placeholder="Phone number"
-                  value={formData.phone}
-                  onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Email Address
-                </label>
-                <Input
-                  placeholder="Email address"
-                  value={formData.email}
-                  onChange={(e) => setFormData({...formData, email: e.target.value})}
-                />
-              </div>
-            </div>
-          </div>
-        )
-
-      case 'business-details':
-        return (
-          <div className="space-y-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Tax ID / EIN
-              </label>
-              <Input
-                placeholder="Enter tax identification number"
-                value={formData.taxId}
-                onChange={(e) => setFormData({...formData, taxId: e.target.value})}
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Website
-              </label>
-              <Input
-                placeholder="https://company-website.com"
-                value={formData.website}
-                onChange={(e) => setFormData({...formData, website: e.target.value})}
-              />
-            </div>
-          </div>
-        )
-
-      case 'billing-preferences':
-        return (
-          <div className="space-y-6">
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Currency
-              </label>
-              <select 
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                value={formData.currency}
-                onChange={(e) => setFormData({...formData, currency: e.target.value})}
-              >
-                <option value="EUR">EUR - Euro</option>
-                <option value="USD">USD - US Dollar</option>
-                <option value="GBP">GBP - British Pound</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Preferred Contact Method
-              </label>
-              <select 
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                value={formData.preferredContact}
-                onChange={(e) => setFormData({...formData, preferredContact: e.target.value})}
-              >
-                <option value="Email">Email</option>
-                <option value="Phone">Phone</option>
-                <option value="Mail">Mail</option>
-              </select>
-            </div>
-          </div>
-        )
-
-      case 'review-save':
-        return (
-          <div className="space-y-6">
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="font-medium text-gray-900 mb-2">Review Company Information</h4>
-              <p className="text-sm text-gray-600">
-                Please review all the information you've entered before saving the company profile.
-              </p>
-            </div>
-            <div className="space-y-3">
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-600">Company:</span>
-                <span className="text-sm font-medium">{formData.companyName || '[Company Name]'}</span>
-              </div>
-                            <div className="flex justify-between">
-                <span className="text-sm text-gray-600">Industry:</span>
-                <span className="text-sm font-medium">{formData.industry || '[Industry]'}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-600">Address:</span>
-                <span className="text-sm font-medium">
-                  {[formData.streetAddress, formData.city, formData.zipCode, formData.country].filter(Boolean).join(', ') || '[Full Address]'}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-600">Contact:</span>
-                <span className="text-sm font-medium">
-                  {[formData.email, formData.phone].filter(Boolean).join(' & ') || '[Email & Phone]'}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-600">Tax ID:</span>
-                <span className="text-sm font-medium">{formData.taxId || '[Tax ID]'}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-600">Currency:</span>
-                <span className="text-sm font-medium">{formData.currency || 'USD'}</span>
-              </div>
-            </div>
-          </div>
-        )
-
-      default:
-        return null
-    }
-  }
-
   return (
     <div className="w-full">
       <div className="w-full">
-        {/* Tab Navigation */}
-        <div className="mb-6">
-          <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg w-fit">
-            <button
-              onClick={() => setActiveTab('search')}
-              className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
-                activeTab === 'search'
-                  ? 'bg-white text-gray-900 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              Search Organization
-            </button>
-            <button
-              onClick={() => setActiveTab('manual')}
-              className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
-                activeTab === 'manual'
-                  ? 'bg-white text-gray-900 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              Add Manually
-            </button>
-          </div>
-        </div>
-
-        {/* Content Area */}
-        {activeTab === 'search' ? (
-          renderSearchTab()
-        ) : (
-          <div className="flex gap-8">
-            {/* Left Sidebar - Steps */}
-            <div className="w-64 flex-shrink-0">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Add Company Steps</h3>
-              <div className="space-y-2">
-                {steps.map((step, index) => {
-                  const IconComponent = step.icon
-                  const isActive = currentStep === step.id
-                  const isCompleted = index < currentStepIndex
-                  
-                  return (
-                    <button
-                      key={step.id}
-                      onClick={() => setCurrentStep(step.id as ManualStepType)}
-                      className={`w-full text-left p-3 rounded-lg transition-colors ${
-                        isActive
-                          ? 'bg-gray-900 text-white'
-                          : isCompleted
-                          ? 'bg-gray-100 text-gray-900 hover:bg-gray-200'
-                          : 'text-gray-600 hover:bg-gray-50'
-                      }`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="flex-1">
-                          <div className="font-medium">{step.name}</div>
-                          <div className={`text-sm ${isActive ? 'text-gray-300' : 'text-gray-500'}`}>
-                            {step.description}
-                          </div>
-                        </div>
-                        {isActive && (
-                          <div className="w-2 h-2 bg-white rounded-full"></div>
-                        )}
-                      </div>
-                    </button>
-                  )
-                })}
-              </div>
-            </div>
-
-            {/* Right Content - Form */}
-            <div className="flex-1">
-              <div className="mb-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-2">
-                  {steps[currentStepIndex]?.name}
-                </h3>
-                <p className="text-gray-600">{steps[currentStepIndex]?.description}</p>
-              </div>
-              
-              {renderManualStep()}
-
-              {/* Navigation Buttons */}
-              <div className="flex justify-end gap-3 pt-6">
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    if (currentStepIndex > 0) {
-                      setCurrentStep(steps[currentStepIndex - 1].id as ManualStepType)
-                    }
-                  }}
-                  disabled={currentStepIndex === 0}
-                >
-                  Previous
-                </Button>
-                <Button
-                  onClick={() => {
-                    if (currentStepIndex < steps.length - 1) {
-                      setCurrentStep(steps[currentStepIndex + 1].id as ManualStepType)
-                    } else {
-                      // Save company
-                      handleManualFormSubmit()
-                    }
-                  }}
-                  disabled={isSubmittingManual}
-                >
-                  {isSubmittingManual ? 'Saving...' : currentStepIndex === steps.length - 1 ? 'Save Company' : 'Next'}
-                </Button>
-              </div>
-            </div>
-          </div>
-        )}
+        {/* Content Area - Search Only */}
+        {renderSearchTab()}
       </div>
     </div>
   )

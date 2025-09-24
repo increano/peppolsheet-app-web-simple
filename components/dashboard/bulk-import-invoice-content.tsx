@@ -4,18 +4,19 @@ import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Upload, Download, FileText, CheckCircle, Eye, ArrowUpDown, Check } from 'lucide-react'
+import { PageSidebar, SidebarItem } from '@/components/ui/page-sidebar'
 import { ColumnDef } from "@tanstack/react-table"
 import { DataTable } from '@/components/dashboard/data-table'
 
-interface BulkImportInvoiceContentProps {
+interface BulkImportDocumentContentProps {
   onClose?: () => void
 }
 
 type ImportStep = 'upload' | 'review'
 
 interface CSVRow {
-  invoice_number: string
-  invoice_date: string
+  document_number: string
+  document_date: string
   due_date: string
   customer_name: string
   customer_email: string
@@ -25,16 +26,16 @@ interface CSVRow {
   payment_terms: string
 }
 
-export function BulkImportInvoiceContent({ onClose }: BulkImportInvoiceContentProps) {
+export function BulkImportDocumentContent({ onClose }: BulkImportDocumentContentProps) {
   const [currentStep, setCurrentStep] = useState<ImportStep>('upload')
   const [uploadedFile, setUploadedFile] = useState<File | null>(null)
   const [isUploading, setIsUploading] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(0)
   const [csvData, setCsvData] = useState<CSVRow[]>([])
 
-  const steps = [
-    { id: 'upload' as ImportStep, name: 'Upload CSV', icon: Upload, description: 'Upload and process your CSV file' },
-    { id: 'review' as ImportStep, name: 'Review Data', icon: Eye, description: 'Review and confirm imported data' },
+  const steps: SidebarItem[] = [
+    { id: 'upload', name: 'Upload CSV', icon: Upload, description: '' },
+    { id: 'review', name: 'Review Data', icon: Eye, description: '' },
   ]
 
   const currentStepIndex = steps.findIndex(step => step.id === currentStep)
@@ -87,8 +88,8 @@ export function BulkImportInvoiceContent({ onClose }: BulkImportInvoiceContentPr
   }
 
   const downloadTemplate = () => {
-    // Create a simple CSV template for invoices
-    const csvContent = `invoice_number,invoice_date,due_date,customer_name,customer_email,currency,total_amount,status,payment_terms
+    // Create a simple CSV template for documents
+    const csvContent = `document_number,document_date,due_date,customer_name,customer_email,currency,total_amount,status,payment_terms
 INV-2025-001,2025-01-15,2025-02-15,Acme Corporation,john@acme.com,USD,1500.00,draft,net-30
 INV-2025-002,2025-01-16,2025-02-16,TechStart Inc,sarah@techstart.com,USD,2500.00,sent,net-30`
     
@@ -96,7 +97,7 @@ INV-2025-002,2025-01-16,2025-02-16,TechStart Inc,sarah@techstart.com,USD,2500.00
     const url = window.URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = 'invoices_import_template.csv'
+    a.download = 'documents_import_template.csv'
     document.body.appendChild(a)
     a.click()
     document.body.removeChild(a)
@@ -104,14 +105,14 @@ INV-2025-002,2025-01-16,2025-02-16,TechStart Inc,sarah@techstart.com,USD,2500.00
   }
 
   const renderUploadStep = () => (
-    <div className="w-full">
+    <div className="w-full p-4">
       {/* Template Download */}
       <div className="mb-6 p-4 bg-blue-50 rounded-lg">
         <div className="flex items-center gap-3">
           <Download className="w-5 h-5 text-blue-600" />
           <div className="flex-1">
             <h3 className="font-medium text-blue-900">Download Template</h3>
-            <p className="text-sm text-blue-700">Get the CSV template with the correct format for importing invoices.</p>
+            <p className="text-sm text-blue-700">Get the CSV template with the correct format for importing documents.</p>
           </div>
           <Button onClick={downloadTemplate} variant="outline" size="sm">
             Download Template
@@ -188,7 +189,7 @@ INV-2025-002,2025-01-16,2025-02-16,TechStart Inc,sarah@techstart.com,USD,2500.00
         <h3 className="font-medium text-gray-900 mb-2">Instructions</h3>
         <ul className="text-sm text-gray-600 space-y-1">
           <li>• Download the template above to get the correct CSV format</li>
-          <li>• Fill in your invoice data following the template structure</li>
+          <li>• Fill in your document data following the template structure</li>
           <li>• Save the file as a CSV format</li>
           <li>• Upload the file using the upload area above</li>
           <li>• Review the preview and confirm the import</li>
@@ -201,7 +202,7 @@ INV-2025-002,2025-01-16,2025-02-16,TechStart Inc,sarah@techstart.com,USD,2500.00
     // Column definitions for the data table
     const columns: ColumnDef<CSVRow>[] = [
       {
-        accessorKey: "invoice_number",
+        accessorKey: "document_number",
         header: ({ column }) => {
           return (
             <Button
@@ -209,12 +210,12 @@ INV-2025-002,2025-01-16,2025-02-16,TechStart Inc,sarah@techstart.com,USD,2500.00
               onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
               className="h-auto p-0 font-medium"
             >
-              Invoice Number
+              Document Number
               <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
           )
         },
-        cell: ({ row }) => <div className="font-medium text-xs leading-[18px]">{row.getValue("invoice_number")}</div>,
+        cell: ({ row }) => <div className="font-medium text-xs leading-[18px]">{row.getValue("document_number")}</div>,
       },
       {
         accessorKey: "customer_name",
@@ -302,10 +303,10 @@ INV-2025-002,2025-01-16,2025-02-16,TechStart Inc,sarah@techstart.com,USD,2500.00
     ]
 
     return (
-      <div className="w-full">
+      <div className="w-full p-4">
         <div className="mb-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-2">Review Imported Data</h3>
-          <p className="text-gray-600">Review the {csvData.length} invoices that will be imported.</p>
+          <h3 className="text-sm font-semibold mb-2">Review Imported Data</h3>
+          <p className="text-sm text-gray-600 mt-1">Review the {csvData.length} documents that will be imported.</p>
         </div>
 
         {/* Summary */}
@@ -313,7 +314,7 @@ INV-2025-002,2025-01-16,2025-02-16,TechStart Inc,sarah@techstart.com,USD,2500.00
           <h4 className="font-medium text-blue-900 mb-2">Import Summary</h4>
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
-              <span className="text-blue-700">Total invoices:</span>
+              <span className="text-blue-700">Total Documents:</span>
               <span className="ml-2 font-medium text-blue-900">{csvData.length}</span>
             </div>
             <div>
@@ -357,75 +358,19 @@ INV-2025-002,2025-01-16,2025-02-16,TechStart Inc,sarah@techstart.com,USD,2500.00
   }
 
   return (
-    <div className="w-full">
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Bulk Import Invoices</h2>
-        <p className="text-gray-600">Import multiple invoices from a CSV file.</p>
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-xl font-bold">Bulk Import Documents</h1>
+        <p className="text-sm text-gray-600 mt-1">Import multiple documents from a CSV file.</p>
       </div>
 
-      <div className="flex gap-8" style={{ minHeight: '80vh' }}>
-        {/* Left Sidebar - Steps */}
-        <div className="w-64 flex-shrink-0 bg-gray-50 border-r border-gray-200 p-4 rounded-l-lg min-h-full">
-          <div className="mb-6">
-            <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
-              Import Document
-            </h3>
-          </div>
-          
-          <nav className="space-y-1">
-            {steps.map((step, index) => {
-              const isActive = currentStep === step.id
-              const isCompleted = index < currentStepIndex
-              
-              return (
-                <div
-                  key={step.id}
-                  className={`p-3 rounded-lg transition-colors cursor-pointer ${
-                    isActive
-                      ? ''
-                      : 'hover:bg-gray-100'
-                  }`}
-                  onClick={() => setCurrentStep(step.id)}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
-                      isCompleted
-                        ? 'bg-green-500'
-                        : isActive
-                        ? 'bg-blue-600'
-                        : 'border-2 border-gray-300'
-                    }`}>
-                      {isCompleted ? (
-                        <Check className="w-3 h-3 text-white" />
-                      ) : (
-                        <span className={`text-xs font-medium ${
-                          isActive ? 'text-white' : 'text-gray-400'
-                        }`}>
-                          {index + 1}
-                        </span>
-                      )}
-                    </div>
-                    <div>
-                      <div className={`text-sm font-medium ${
-                        isActive ? 'text-blue-900' : 'text-gray-700'
-                      }`}>
-                        {step.name}
-                      </div>
-                      <div className={`text-xs ${
-                        isActive ? 'text-blue-700' : 'text-gray-500'
-                      }`}>
-                        {step.description}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )
-            })}
-          </nav>
-        </div>
-
-        {/* Right Content */}
-        <div className="flex-1">
+      <PageSidebar
+        title="Import Document"
+        items={steps}
+        activeItem={currentStep}
+        onItemClick={(itemId) => setCurrentStep(itemId as ImportStep)}
+      >
+        <div className="space-y-4 p-4">
           {renderCurrentStep()}
 
           {/* Navigation Buttons */}
@@ -434,7 +379,7 @@ INV-2025-002,2025-01-16,2025-02-16,TechStart Inc,sarah@techstart.com,USD,2500.00
               variant="outline"
               onClick={() => {
                 if (currentStepIndex > 0) {
-                  setCurrentStep(steps[currentStepIndex - 1].id)
+                  setCurrentStep(steps[currentStepIndex - 1].id as ImportStep)
                 }
               }}
               disabled={currentStepIndex === 0}
@@ -445,15 +390,15 @@ INV-2025-002,2025-01-16,2025-02-16,TechStart Inc,sarah@techstart.com,USD,2500.00
               <Button
                 onClick={() => {
                   // Handle final import
-                  console.log('Importing invoices:', csvData)
+                  console.log('Importing documents:', csvData)
                 }}
               >
-                Import Invoices
+                Import Documents
               </Button>
             )}
           </div>
         </div>
-      </div>
+      </PageSidebar>
     </div>
   )
 }

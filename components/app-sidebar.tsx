@@ -28,6 +28,7 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar"
+import { useAuth } from "@/lib/auth-context"
 
 // This is sample data.
 const data = {
@@ -130,6 +131,40 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { user, loading } = useAuth()
+
+  // Create user object from auth context
+  const userData = React.useMemo(() => {
+    if (!user) {
+      return {
+        name: "Loading...",
+        email: "loading@example.com",
+        initials: "L",
+      }
+    }
+
+    // Create display name from first and last name, fallback to email
+    const displayName = user.firstName && user.lastName 
+      ? `${user.firstName} ${user.lastName}`
+      : user.email?.split('@')[0] || 'User'
+
+    // Generate initials from first and last name
+    let initials = "U" // Default fallback
+    if (user.firstName && user.lastName) {
+      initials = `${user.firstName.charAt(0).toUpperCase()}${user.lastName.charAt(0).toUpperCase()}`
+    } else if (user.firstName) {
+      initials = user.firstName.charAt(0).toUpperCase()
+    } else if (user.email) {
+      initials = user.email.charAt(0).toUpperCase()
+    }
+
+    return {
+      name: displayName,
+      email: user.email || "user@example.com",
+      initials: initials,
+    }
+  }, [user])
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -141,7 +176,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <RoleNavMain />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={userData} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
